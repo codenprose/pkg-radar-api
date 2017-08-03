@@ -1,0 +1,8 @@
+{
+    "dev": {
+        "app_function": "service.app",
+        "profile_name": "default",
+        "s3_bucket": "pkg-radar-api-dev",
+        "aws_region": "us-east-1"
+    }
+}
