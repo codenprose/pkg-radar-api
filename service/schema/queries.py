@@ -26,7 +26,7 @@ class Package(graphene.ObjectType):
     stars = graphene.Int(required=True)
     trial = graphene.Int(required=True)
     updated_at = graphene.String()
-    website = graphene.String()
+    website_url = graphene.String()
     
 
 class PackageSummary(graphene.ObjectType):

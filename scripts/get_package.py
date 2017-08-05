@@ -4,12 +4,14 @@ session = boto3.Session()
 db_r = session.resource('dynamodb')
 db_c = session.client('dynamodb')
 
-packages_table = db_r.Table('pkg_radar_dev_packages')
+table_name = ''
+owner_name = ''
+package_name = ''
 
-query_result = packages_table.get_item(
+query_result = db_r.Table(table_name).get_item(
     Key={
-        'owner_name': 'facebook',
-        'package_name': 'react'
+        'owner_name': owner_name,
+        'package_name': package_name
     },
     ReturnConsumedCapacity='TOTAL'
 )
