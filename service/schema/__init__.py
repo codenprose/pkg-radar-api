@@ -1,8 +1,9 @@
 import graphene
 
 from service import packages_table
-from .queries import Package, PackageSummary, PackageInput
+from .types import Package, PackageSummary, PackageInput
 from .resolvers import get_package, get_package_summary
+from .mutations import CreatePackage
 
 
 class RootQuery(graphene.ObjectType):
@@ -19,4 +20,8 @@ class RootQuery(graphene.ObjectType):
     )
 
 
-schema = graphene.Schema(query=RootQuery)
+class Mutations(graphene.ObjectType):
+    create_package = CreatePackage.Field()
+
+
+schema = graphene.Schema(query=RootQuery, mutation=Mutations)

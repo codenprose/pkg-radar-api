@@ -1,0 +1,13 @@
+mutation createPackage($owner: String!, $name: String!) {
+  createPackage(owner: $owner, name: $name) {
+    package {
+      id
+      ownerAvatar
+      ownerName
+      packageName
+      stars
+      issues
+      mentionableUsers
+    }
+  }
+}

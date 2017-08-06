@@ -1,5 +1,10 @@
+import json
+import requests
+import uuid
+from datetime import datetime
+
 from service import packages_table
-from .queries import Package
+from .types import Package
 
 
 def get_package(root, args, context, info):
@@ -89,3 +94,57 @@ def get_package_summary(root, args, context, info):
     print(data['ConsumedCapacity'])
 
     return response
+
+
+def create_package(owner, name, user):
+    endpoint = 'https://rc5s84uwm4.execute-api.us-east-1.amazonaws.com/dev/service'
+    payload = { 'owner': owner, 'name': name }
+    
+    # fetch github data
+    r = requests.post(endpoint, json=payload)
+    if r.status_code != requests.codes.ok:
+        return r.raise_for_status()
+
+    package = r.json()
+
+    id = uuid.uuid4()
+    date = datetime.isoformat(datetime.now())
+
+    package['archive'] = 0
+    package['backlog'] = 0
+    package['created_at'] = date
+    package['created_by'] = user
+    package['id'] = str(id)
+    package['production'] = 0
+    package['trial'] = 0
+
+    item = packages_table.put_item(Item=package)
+
+    print('Successfully wrote to DynamoDB')
+    print(item)
+
+    return Package(
+        archive=package['archive'],
+        backlog=package['backlog'],
+        color=package['color'],
+        created_at=package['created_at'],
+        created_by=package['created_by'],
+        description=package['description'],
+        id=package['id'],
+        issues=package['issues'],
+        language=package['language'],
+        last_commit=package['last_commit'],
+        last_release=package['last_release'],
+        license=package['license'],
+        mentionable_users=package['mentionable_users'],
+        owner_avatar=package['owner_avatar'],
+        owner_name=package['owner_name'],
+        package_name=package['package_name'],
+        production=package['production'],
+        pull_requests=package['pull_requests'],
+        readme=package['readme'],
+        repo_url=package['repo_url'],
+        stars=package['stars'],
+        trial=package['trial'],
+        website_url=package['website_url']
+    )

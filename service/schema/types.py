@@ -1,5 +1,6 @@
 import graphene
 
+
 # Pacakges
 class Package(graphene.ObjectType):
     archive = graphene.Int(required=True)
@@ -97,6 +98,7 @@ class LastCommit(graphene.ObjectType):
 
     def resolve_oid(root, args, context, info):
         return root['oid']
+
 
 class Author(graphene.ObjectType):
     date = graphene.String()
