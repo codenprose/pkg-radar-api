@@ -139,4 +139,17 @@ class PackageRecommendation(ObjectType):
 
 class PackageRecommendationsInput(InputObjectType):
     package_id = ID(required=True)
-    
+
+
+# Users
+class UserKanbanPackage(ObjectType):
+    board = String(required=True)
+    owner_name = String(required=True)
+    package_id = ID(required=True)
+    package_name = String(required=True)
+    status = String(required=True)
+    user_id = ID(required=True)
+
+
+class UserKanbanPackageInput(InputObjectType):
+    user_id = ID(required=True)

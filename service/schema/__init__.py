@@ -2,9 +2,10 @@ from graphene import Schema, ObjectType, String, Field, List
 
 from service import packages_table
 from .types import Package, PackageSummary, PackageInput, PackageFilter, \
-    PackageTag, PackageTagInput, PackageRecommendation, PackageRecommendationsInput
+    PackageTag, PackageTagInput, PackageRecommendation, PackageRecommendationsInput, \
+    UserKanbanPackage, UserKanbanPackageInput
 from .resolvers import get_package, get_package_summary, get_packages, get_package_tags, \
-    get_package_recommendations
+    get_package_recommendations, get_user_kanban_packages
 from .mutations import CreatePackage, CreatePackageTag, DeletePackageTag, CreatePackageRecommendation, \
     DeletePackageRecommendation
 
@@ -38,6 +39,12 @@ class RootQuery(ObjectType):
         PackageRecommendation,
         payload=PackageRecommendationsInput(),
         resolver=get_package_recommendations
+    )
+
+    user_kanban_packages = List(
+        UserKanbanPackage,
+        payload=UserKanbanPackageInput(),
+        resolver=get_user_kanban_packages
     )
 
 

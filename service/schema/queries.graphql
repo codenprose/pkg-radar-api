@@ -11,3 +11,14 @@ query getPackageRecommendations($packageId: ID!) {
     recommendationPackageName
   }
 }
+
+query getUserKanbanPackages($userId: ID!) {
+  userKanbanPackages(payload: { userId: $userId }) {
+    board
+    ownerName
+    packageId
+    packageName
+    status
+    userId
+  }
+}

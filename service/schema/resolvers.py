@@ -3,8 +3,9 @@ import requests
 import uuid
 from datetime import datetime
 
-from service import packages_table, package_tags_table, package_recommendations_table
-from .types import Package, PackageTag, PackageRecommendation
+from service import packages_table, package_tags_table, package_recommendations_table, \
+    user_kanban_packages_table
+from .types import Package, PackageTag, PackageRecommendation, UserKanbanPackage
 
 
 # Queries
@@ -166,7 +167,36 @@ def get_package_recommendations(root, args, context, info):
         )
 
     return response
+
+
+def get_user_kanban_packages(root, args, context, info):
+    payload = args.get('payload')
+    user_id = payload['user_id']
+
+    data = user_kanban_packages_table.query(
+        IndexName='user-packages-index',
+        ExpressionAttributeValues={':user_id': user_id},
+        KeyConditionExpression='user_id = :user_id',
+        ReturnConsumedCapacity='INDEXES'
+    )
+
+    kanban_packages = data['Items']
+    response = []
+
+    for item in kanban_packages:
+        response.append(
+            UserKanbanPackage(
+                board=item['board'],
+                owner_name=item['owner_name'],
+                package_id=item['package_id'],
+                package_name=item['package_name'],
+                status=item['status'],
+                user_id=item['user_id']
+            )
+        )
     
+    return response
+
 
 # Mutations
 def create_package(owner, name, user):
