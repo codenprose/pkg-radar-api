@@ -1,8 +1,9 @@
 from graphene import Mutation, String, ID, Field
 
-from .types import Package, PackageTag, PackageRecommendation
+from .types import Package, PackageTag, PackageRecommendation, UserKanbanPackage
 from .resolvers import create_package, create_package_tag, delete_package_tag, \
-    create_package_recommendation, delete_package_recommendation
+    create_package_recommendation, delete_package_recommendation, create_user_kanban_package, \
+    update_user_kanban_package, delete_user_kanban_package
 
 
 class CreatePackage(Mutation):
@@ -125,7 +126,36 @@ class DeletePackageRecommendation(Mutation):
         return DeletePackageRecommendation(package_recomendation=package_recomendation)
 
 
-# TODO: Add Create User Kanban Package mutation
+class CreateUserKanbanPackage(Mutation):
+    class Input:
+        board = String(required=True)
+        owner_name = String(required=True)
+        package_id = ID(required=True)
+        package_name = String(required=True)
+        status = String(required=True)
+        user_id = ID(required=True)
+    
+    user_kanban_package = Field(lambda: UserKanbanPackage)
+
+    @staticmethod
+    def mutate(root, args, context, info):
+        board = args.get('board')
+        owner_name = args.get('owner_name')
+        package_id = args.get('package_id')
+        package_name = args.get('package_name')
+        status = args.get('status')
+        user_id = args.get('user_id')
+
+        user_kanban_package = create_user_kanban_package(
+            board=board,
+            owner_name=owner_name,
+            package_id=package_id,
+            package_name=package_name,
+            status=status,
+            user_id=user_id
+        )
+
+        return CreateUserKanbanPackage(user_kanban_package=user_kanban_package)
 
 
 # TODO: Add Update User Kanban Package mutation

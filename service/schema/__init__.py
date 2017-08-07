@@ -7,7 +7,7 @@ from .types import Package, PackageSummary, PackageInput, PackageFilter, \
 from .resolvers import get_package, get_package_summary, get_packages, get_package_tags, \
     get_package_recommendations, get_user_kanban_packages
 from .mutations import CreatePackage, CreatePackageTag, DeletePackageTag, CreatePackageRecommendation, \
-    DeletePackageRecommendation
+    DeletePackageRecommendation, CreateUserKanbanPackage
 
 
 class RootQuery(ObjectType):
@@ -58,6 +58,8 @@ class Mutations(ObjectType):
     create_package_recommendation = CreatePackageRecommendation.Field()
 
     delete_package_recommendation = DeletePackageRecommendation.Field()
+
+    create_user_kanban_package = CreateUserKanbanPackage.Field()
 
 
 schema = Schema(query=RootQuery, mutation=Mutations)

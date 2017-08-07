@@ -79,3 +79,30 @@ mutation deletePackageRecommendation(
     }
   }
 }
+
+mutation createUserKanbanPackage(
+  $board: String!, 
+  $ownerName: String!, 
+  $packageId: ID!, 
+  $packageName: String!, 
+  $status: String!, 
+  $userId: ID!
+) {
+  createUserKanbanPackage(
+    board: $board, 
+    ownerName: $ownerName, 
+    packageId: $packageId, 
+    packageName: $packageName, 
+    status: $status, 
+    userId: $userId
+  ) {
+    userKanbanPackage {
+      board
+      ownerName
+      packageId
+      packageName
+      status
+      userId
+    }
+  }
+}

@@ -345,3 +345,41 @@ def delete_package_recommendation(**kwargs):
         recommendation_owner_name=recommendation['recommendation_owner_name'],
         recommendation_package_name=recommendation['recommendation_package_name']
     )
+
+
+
+def create_user_kanban_package(**kwargs):
+    user_kanban_package = {
+        'board': kwargs.get('board'),
+        'owner_name': kwargs.get('owner_name'),
+        'package_id': kwargs.get('package_id'),
+        'package_name': kwargs.get('package_name'),
+        'status': kwargs.get('status'),
+        'user_id': kwargs.get('user_id')
+    }
+
+    item = user_kanban_packages_table.put_item(Item=user_kanban_package)
+
+    print('Successfully wrote to DynamoDB')
+    print(item)
+
+    return UserKanbanPackage(
+        board=user_kanban_package['board'],
+        owner_name=user_kanban_package['owner_name'],
+        package_id=user_kanban_package['package_id'],
+        package_name=user_kanban_package['package_name'],
+        status=user_kanban_package['status'],
+        user_id=user_kanban_package['user_id']
+    )
+
+
+def update_user_kanban_package(**kwargs):
+    return UserKanbanPackage(
+        # add values
+    )
+
+
+def delete_user_kanban_package(**kwargs):
+    return UserKanbanPackage(
+        # add values
+    )
