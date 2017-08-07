@@ -122,33 +122,24 @@ def get_packages(root, args, context, info):
 
 def get_package_tags(root, args, context, info):
     payload = args.get('payload')
-    tag_name = payload['tag_name']
     package_id = payload['package_id']
 
-    data = package_tags_table.get_item(
-        Key={
-            'tag_name': tag_name,
-            'package_id': package_id
-        },
-        ReturnConsumedCapacity='TOTAL'
+
+    data = package_tags_table.query(
+        IndexName='all-tags',
+        ExpressionAttributeValues={':id': package_id},
+        KeyConditionExpression='package_id = :id',
+        ReturnConsumedCapacity='INDEXES'
     )
 
     response = []
-    tags = data['Items'] if 'Items' in data else data['Item']
+    tags = data['Items']
 
-    if type(tags) == list:
-        for item in tags:
-            response.append(
-                PackageTag(
-                    tag_name=item['tag_name'],
-                    package_id=item['package_id']
-                )
-            )
-    else:
+    for item in tags:
         response.append(
             PackageTag(
-                tag_name=tags['tag_name'],
-                package_id=tags['package_id']
+                package_id=item['package_id'],
+                tag_name=item['tag_name']
             )
         )
     return response
@@ -227,4 +218,26 @@ def create_package_tag(tag_name, package_id, owner_name, package_name):
         package_id=tag['package_id'],
         owner_name=tag['owner_name'],
         package_name=tag['package_name']
+    )
+
+
+def delete_package_tag(package_id, tag_name):
+    tag = {
+        'package_id': package_id,
+        'tag_name': tag_name
+    }
+
+    item = package_tags_table.delete_item(
+        Key={
+            'package_id': package_id,
+            'tag_name': tag_name
+        }
+    )
+
+    print('Successfully wrote to DynamoDB')
+    print(item)
+
+    return PackageTag(
+        package_id=tag['package_id'],
+        tag_name=tag['tag_name']
     )

@@ -1,7 +1,7 @@
 from graphene import Mutation, String, ID, Field
 
 from .types import Package, PackageTag
-from .resolvers import create_package, create_package_tag
+from .resolvers import create_package, create_package_tag, delete_package_tag
 
 class CreatePackage(Mutation):
     class Input:
@@ -45,7 +45,24 @@ class CreatePackageTag(Mutation):
         return CreatePackageTag(package_tag=package_tag)
 
 
-# TODO: Add Delete Package Tag mutation
+class DeletePackageTag(Mutation):
+    class Input:
+        tag_name = String(required=True)
+        package_id = ID(required=True)
+
+    package_tag = Field(lambda: PackageTag)
+
+    @staticmethod
+    def mutate(root, args, context, info):
+        package_id = args.get('package_id')
+        tag_name = args.get('tag_name')
+
+        package_tag = delete_package_tag(
+            package_id,
+            tag_name
+        )
+
+        return DeletePackageTag(package_tag=package_tag)
 
 
 # TODO: Add Create Package Recommendation mutation

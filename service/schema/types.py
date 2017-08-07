@@ -115,12 +115,12 @@ class Author(ObjectType):
 
 # Package Tags
 class PackageTag(ObjectType):
-    tag_name = String(required=True)
     package_id = ID(required=True)
-    owner_name = String(required=True)
-    package_name = String(required=True)
+    tag_name = String(required=True)
+    owner_name = String()
+    package_name = String()
 
 
 class PackageTagInput(InputObjectType):
-    tag_name = String(required=True)
     package_id = ID(required=True)
+    tag_name = String()

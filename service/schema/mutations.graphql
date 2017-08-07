@@ -22,3 +22,12 @@ mutation createPackageTag($tagName: String!, $packageId: ID!, $ownerName: String
     }
   }
 }
+
+mutation deletePackageTag($tagName: String!, $packageId: ID!) {
+	deletePackageTag(tagName: $tagName, packageId: $packageId) {
+    packageTag {
+      packageId
+      tagName
+    }
+  }	
+}

@@ -1,0 +1,6 @@
+query getPackageTags($packageId: ID!) {
+  packageTags(payload: { packageId: $packageId }) {
+    packageId
+    tagName
+  }
+}
