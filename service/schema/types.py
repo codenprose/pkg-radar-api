@@ -1,59 +1,58 @@
-import graphene
+from graphene import ObjectType, InputObjectType, String, ID, Int, Field, List
 
 
 # Pacakges
-class Package(graphene.ObjectType):
-    archive = graphene.Int(required=True)
-    backlog = graphene.Int(required=True)
-    color = graphene.String(required=True)
-    created_at = graphene.String()
-    created_by = graphene.ID()
-    description = graphene.String(required=True)
-    id = graphene.ID(required=True)
-    issues = graphene.Int(required=True)
-    language = graphene.String(required=True)
-    last_commit = graphene.Field(lambda: LastCommit)
-    last_release = graphene.Field(lambda: LastRelease)
-    license = graphene.String()
-    mentionable_users = graphene.Int(required=True)
-    owner_avatar = graphene.String(required=True)
-    owner_name = graphene.String(required=True)
-    package_name = graphene.String(required=True)
-    package_avatar = graphene.String()
-    production = graphene.Int(required=True)
-    pull_requests = graphene.Int(required=True)
-    readme = graphene.Field(lambda: Readme)
-    repo_url = graphene.String(required=True)
-    stars = graphene.Int(required=True)
-    trial = graphene.Int(required=True)
-    updated_at = graphene.String()
-    website_url = graphene.String()
+class Package(ObjectType):
+    archive = Int(required=True)
+    backlog = Int(required=True)
+    color = String(required=True)
+    created_at = String()
+    created_by = ID()
+    description = String(required=True)
+    id = ID(required=True)
+    issues = Int(required=True)
+    language = String(required=True)
+    last_commit = Field(lambda: LastCommit)
+    last_release = Field(lambda: LastRelease)
+    license = String()
+    mentionable_users = Int(required=True)
+    owner_avatar = String(required=True)
+    owner_name = String(required=True)
+    package_name = String(required=True)
+    package_avatar = String()
+    production = Int(required=True)
+    pull_requests = Int(required=True)
+    readme = Field(lambda: Readme)
+    repo_url = String(required=True)
+    stars = Int(required=True)
+    trial = Int(required=True)
+    updated_at = String()
+    website_url = String()
     
 
-class PackageSummary(graphene.ObjectType):
-    archive = graphene.Int(required=True)
-    backlog = graphene.Int(required=True)
-    color = graphene.String(required=True)
-    description = graphene.String(required=True)
-    issues = graphene.Int(required=True)
-    language = graphene.String(required=True)
-    owner_avatar = graphene.String(required=True)
-    owner_name = graphene.String(required=True)
-    package_avatar = graphene.String()
-    package_name = graphene.String(required=True)
-    production = graphene.Int(required=True)
-    stars = graphene.Int(required=True)
-    trial = graphene.Int(required=True)
+class PackageSummary(ObjectType):
+    color = String(required=True)
+    description = String(required=True)
+    issues = Int(required=True)
+    language = String(required=True)
+    owner_avatar = String(required=True)
+    owner_name = String(required=True)
+    package_name = String(required=True)
+    stars = Int(required=True)
 
 
-class PackageInput(graphene.InputObjectType):
-    owner_name = graphene.String(required=True)
-    package_name = graphene.String(required=True)
+class PackageInput(InputObjectType):
+    owner_name = String(required=True)
+    package_name = String(required=True)
 
 
-class Readme(graphene.ObjectType):
-    extension = graphene.String()
-    text = graphene.String()
+class PackageFilter(InputObjectType):
+    language = String()
+
+
+class Readme(ObjectType):
+    extension = String()
+    text = String()
 
     def resolve_extension(root, args, context, info):
         return root['extension']
@@ -62,11 +61,11 @@ class Readme(graphene.ObjectType):
         return root['text']
     
 
-class LastRelease(graphene.ObjectType):
-    description = graphene.String()
-    name = graphene.String(required=True)
-    published_at = graphene.String(required=True)
-    url = graphene.String(required=True)
+class LastRelease(ObjectType):
+    description = String()
+    name = String(required=True)
+    published_at = String(required=True)
+    url = String(required=True)
 
     def resolve_description(root, args, context, info):
         return root['description']
@@ -81,11 +80,11 @@ class LastRelease(graphene.ObjectType):
         return root['url']
 
 
-class LastCommit(graphene.ObjectType):
-    author = graphene.Field(lambda: Author)
-    commit_url = graphene.String(required=True)
-    message = graphene.String(required=True)
-    oid = graphene.ID(required=True)
+class LastCommit(ObjectType):
+    author = Field(lambda: Author)
+    commit_url = String(required=True)
+    message = String(required=True)
+    oid = ID(required=True)
 
     def resolve_author(root, args, context, info):
         return root['author']
@@ -100,10 +99,10 @@ class LastCommit(graphene.ObjectType):
         return root['oid']
 
 
-class Author(graphene.ObjectType):
-    date = graphene.String()
-    name = graphene.String()
-    email = graphene.String()
+class Author(ObjectType):
+    date = String()
+    name = String()
+    email = String()
 
     def resolve_date(root, args, context, info):
         return root['date']

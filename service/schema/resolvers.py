@@ -61,33 +61,25 @@ def get_package_summary(root, args, context, info):
     package_name = payload['package_name']
 
     data = packages_table.query(
-        IndexName='package_summary',
+        IndexName='summary_index',
         ExpressionAttributeValues={':oname': owner_name,':pname': package_name},
         KeyConditionExpression='owner_name = :oname AND package_name = :pname',
         ReturnConsumedCapacity='INDEXES'
     )
 
     item = data['Items'][0]
-    
-    package_avatar = ''
-    if 'package_avatar' in item:
-        package_avatar = item['package_avatar']
 
     response = Package(
-        archive=item['archive'],
-        backlog=item['backlog'],
         color=item['color'],
         description=item['description'],
         issues=item['issues'],
         language=item['language'],
         owner_avatar=item['owner_avatar'],
-        owner_name=item['owner_name'],
-        package_avatar=package_avatar,
-        package_name=item['package_name'],
-        production=item['production'],
+        owner_name=owner_name,
+        package_name=package_name,
         stars=item['stars'],
-        trial=item['trial'],
     )
+
     print('-' * 50)
     print('Consumed Capacity: Package Summary')
     print('-' * 50)
@@ -95,6 +87,37 @@ def get_package_summary(root, args, context, info):
 
     return response
 
+
+def get_packages(root, args, context, info):
+    pkg_filter = args.get('filter')
+    
+    if 'language' in pkg_filter:
+        data = packages_table.query(
+            IndexName='language-index',
+            ExpressionAttributeNames={ '#L': 'language' },
+            ExpressionAttributeValues={ ':l': pkg_filter['language'] },
+            KeyConditionExpression='#L = :l',
+            ReturnConsumedCapacity='INDEXES'
+        )
+
+    response = []
+    packages = data['Items']
+
+    for item in packages:
+        response.append(
+            Package(
+                color=item['color'],
+                description=item['description'],
+                issues=item['issues'],
+                language=item['language'],
+                owner_avatar=item['owner_avatar'],
+                owner_name=item['owner_name'],
+                package_name=item['package_name'],
+                stars=item['stars'],
+            )
+        )
+    
+    return response
 
 def create_package(owner, name, user):
     endpoint = 'https://rc5s84uwm4.execute-api.us-east-1.amazonaws.com/dev/service'

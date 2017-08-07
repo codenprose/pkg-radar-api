@@ -1,14 +1,14 @@
-import graphene
+from graphene import Mutation, String, Field
 
 from .types import Package
 from .resolvers import create_package
 
-class CreatePackage(graphene.Mutation):
+class CreatePackage(Mutation):
     class Input:
-        owner = graphene.String(required=True)
-        name = graphene.String(required=True)
+        owner = String(required=True)
+        name = String(required=True)
 
-    package = graphene.Field(lambda: Package)
+    package = Field(lambda: Package)
 
     @staticmethod
     def mutate(root, args, context, info):
