@@ -264,3 +264,54 @@ def delete_package_tag(package_id, tag_name):
         package_id=tag['package_id'],
         tag_name=tag['tag_name']
     )
+
+
+def create_package_recommendation(**kwargs):
+    recommendation = {
+        'package_id': kwargs['package_id'],
+        'owner_name': kwargs['owner_name'],
+        'package_name': kwargs['package_name'],
+        'recommendation_package_id': kwargs['recommendation_package_id'],
+        'recommendation_owner_name': kwargs['recommendation_owner_name'],
+        'recommendation_package_name': kwargs['recommendation_package_name']
+    }
+
+    item = package_recommendations_table.put_item(Item=recommendation)
+
+    print('Successfully wrote to DynamoDB')
+    print(item)
+
+    return PackageRecommendation(
+        package_id=recommendation['package_id'],
+        owner_name=recommendation['owner_name'],
+        package_name=recommendation['package_name'],
+        recommendation_package_id=recommendation['recommendation_package_id'],
+        recommendation_owner_name=recommendation['recommendation_owner_name'],
+        recommendation_package_name=recommendation['recommendation_package_name']
+    )
+
+
+def delete_package_recommendation(**kwargs):
+    recommendation = {
+        'package_id': kwargs['package_id'],
+        'recommendation_package_id': kwargs['recommendation_package_id'],
+        'recommendation_owner_name': kwargs['recommendation_owner_name'],
+        'recommendation_package_name': kwargs['recommendation_package_name']
+    }
+
+    item = package_recommendations_table.delete_item(
+        Key={
+            'package_id': recommendation['package_id'],
+            'recommendation_package_id': recommendation['recommendation_package_id']
+        }
+    )
+
+    print('Successfully wrote to DynamoDB')
+    print(item)
+
+    return PackageRecommendation(
+        package_id=recommendation['package_id'],
+        recommendation_package_id=recommendation['recommendation_package_id'],
+        recommendation_owner_name=recommendation['recommendation_owner_name'],
+        recommendation_package_name=recommendation['recommendation_package_name']
+    )

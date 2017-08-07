@@ -2,10 +2,11 @@ from graphene import Schema, ObjectType, String, Field, List
 
 from service import packages_table
 from .types import Package, PackageSummary, PackageInput, PackageFilter, \
-    PackageTag, PackageTagInput, PackageRecommendation, PackageRecommendationInput
+    PackageTag, PackageTagInput, PackageRecommendation, PackageRecommendationsInput
 from .resolvers import get_package, get_package_summary, get_packages, get_package_tags, \
     get_package_recommendations
-from .mutations import CreatePackage, CreatePackageTag, DeletePackageTag
+from .mutations import CreatePackage, CreatePackageTag, DeletePackageTag, CreatePackageRecommendation, \
+    DeletePackageRecommendation
 
 
 class RootQuery(ObjectType):
@@ -35,7 +36,7 @@ class RootQuery(ObjectType):
 
     package_recommendations = List(
         PackageRecommendation,
-        payload=PackageRecommendationInput(),
+        payload=PackageRecommendationsInput(),
         resolver=get_package_recommendations
     )
 
@@ -46,6 +47,10 @@ class Mutations(ObjectType):
     create_package_tag = CreatePackageTag.Field()
 
     delete_package_tag = DeletePackageTag.Field()
+
+    create_package_recommendation = CreatePackageRecommendation.Field()
+
+    delete_package_recommendation = DeletePackageRecommendation.Field()
 
 
 schema = Schema(query=RootQuery, mutation=Mutations)

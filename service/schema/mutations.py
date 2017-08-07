@@ -1,7 +1,8 @@
 from graphene import Mutation, String, ID, Field
 
-from .types import Package, PackageTag
-from .resolvers import create_package, create_package_tag, delete_package_tag
+from .types import Package, PackageTag, PackageRecommendation
+from .resolvers import create_package, create_package_tag, delete_package_tag, \
+    create_package_recommendation, delete_package_recommendation
 
 
 class CreatePackage(Mutation):
@@ -66,10 +67,62 @@ class DeletePackageTag(Mutation):
         return DeletePackageTag(package_tag=package_tag)
 
 
-# TODO: Add Create Package Recommendation mutation
+class CreatePackageRecommendation(Mutation):
+    class Input:
+        package_id = ID(required=True)
+        owner_name = String()
+        package_name = String()
+        recommendation_package_id = ID(required=True)
+        recommendation_owner_name = String(required=True)
+        recommendation_package_name = String(required=True)
+
+    package_recomendation = Field(lambda: PackageRecommendation)
+
+    @staticmethod
+    def mutate(root, args, context, info):
+        package_id = args.get('package_id')
+        owner_name = args.get('owner_name')
+        package_name = args.get('package_name')
+        recommendation_package_id = args.get('recommendation_package_id')
+        recommendation_owner_name = args.get('recommendation_owner_name')
+        recommendation_package_name = args.get('recommendation_package_name')
+
+        package_recomendation = create_package_recommendation(
+            package_id=package_id,
+            owner_name=owner_name,
+            package_name=package_name,
+            recommendation_package_id=recommendation_package_id,
+            recommendation_owner_name=recommendation_owner_name,
+            recommendation_package_name=recommendation_package_name
+        )
+
+        return CreatePackageRecommendation(package_recomendation=package_recomendation)
 
 
-# TODO: Add Delete Package Recommendation mutation
+class DeletePackageRecommendation(Mutation):
+    class Input:
+        package_id = ID(required=True)
+        recommendation_package_id = ID(required=True)
+        recommendation_owner_name = String(required=True)
+        recommendation_package_name = String(required=True)
+
+    package_recomendation = Field(lambda: PackageRecommendation)
+
+    @staticmethod
+    def mutate(root, args, context, info):
+        package_id = args.get('package_id')
+        recommendation_package_id = args.get('recommendation_package_id')
+        recommendation_owner_name = args.get('recommendation_owner_name')
+        recommendation_package_name = args.get('recommendation_package_name')
+
+        package_recomendation = delete_package_recommendation(
+            package_id=package_id,
+            recommendation_package_id=recommendation_package_id,
+            recommendation_owner_name=recommendation_owner_name,
+            recommendation_package_name=recommendation_package_name
+        )
+
+        return DeletePackageRecommendation(package_recomendation=package_recomendation)
 
 
 # TODO: Add Create User Kanban Package mutation

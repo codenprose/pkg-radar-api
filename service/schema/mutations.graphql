@@ -31,3 +31,51 @@ mutation deletePackageTag($tagName: String!, $packageId: ID!) {
     }
   }	
 }
+
+mutation createPackageRecommendation(
+  $packageId: ID!, 
+  $ownerName: String!,
+  $packageName: String!,
+  $recommendationPackageId: ID!,
+  $recommendationOwnerName: String!,
+  $recommendationPackageName: String!
+) {
+  createPackageRecommendation(
+    packageId: $packageId,
+    ownerName: $ownerName,
+    packageName: $packageName,
+    recommendationPackageId: $recommendationPackageId,
+    recommendationOwnerName: $recommendationOwnerName,
+    recommendationPackageName: $recommendationPackageName
+  ) {
+    packageRecomendation {
+      packageId
+      ownerName
+      packageName
+      recommendationPackageId
+      recommendationOwnerName
+      recommendationPackageName
+    }
+  }
+}
+
+mutation deletePackageRecommendation(
+  $packageId: ID!, 
+  $recommendationPackageId: ID!,
+  $recommendationOwnerName: String!,
+  $recommendationPackageName: String!
+) {
+  deletePackageRecommendation(
+    packageId: $packageId,
+    recommendationPackageId: $recommendationPackageId,
+    recommendationOwnerName: $recommendationOwnerName,
+    recommendationPackageName: $recommendationPackageName
+  ) {
+    packageRecomendation {
+      packageId
+      recommendationPackageId
+      recommendationOwnerName
+      recommendationPackageName
+    }
+  }
+}

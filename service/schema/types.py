@@ -137,8 +137,6 @@ class PackageRecommendation(ObjectType):
     recommendation_package_name = String(required=True)
 
 
-class PackageRecommendationInput(InputObjectType):
+class PackageRecommendationsInput(InputObjectType):
     package_id = ID(required=True)
-    recommendation_package_id = ID()
-    recommendation_owner_name = String()
-    recommendation_package_name = String()
+    
