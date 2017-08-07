@@ -207,3 +207,24 @@ def create_package(owner, name, user):
         trial=package['trial'],
         website_url=package['website_url']
     )
+
+
+def create_package_tag(tag_name, package_id, owner_name, package_name):
+    tag = {
+        'tag_name': tag_name,
+        'package_id': package_id,
+        'owner_name': owner_name,
+        'package_name': package_name
+    }
+
+    item = package_tags_table.put_item(Item=tag)
+
+    print('Successfully wrote to DynamoDB')
+    print(item)
+
+    return PackageTag(
+        tag_name=tag['tag_name'],
+        package_id=tag['package_id'],
+        owner_name=tag['owner_name'],
+        package_name=tag['package_name']
+    )

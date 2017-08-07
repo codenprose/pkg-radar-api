@@ -117,8 +117,10 @@ class Author(ObjectType):
 class PackageTag(ObjectType):
     tag_name = String(required=True)
     package_id = ID(required=True)
+    owner_name = String(required=True)
+    package_name = String(required=True)
 
 
 class PackageTagInput(InputObjectType):
     tag_name = String(required=True)
-    package_id = String(required=True)
+    package_id = ID(required=True)

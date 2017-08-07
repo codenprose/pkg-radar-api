@@ -11,3 +11,14 @@ mutation createPackage($owner: String!, $name: String!) {
     }
   }
 }
+
+mutation createPackageTag($tagName: String!, $packageId: ID!, $ownerName: String!, $packageName: String!) {
+  createPackageTag(tagName: $tagName, packageId: $packageId, ownerName: $ownerName, packageName: $packageName) {
+    packageTag {
+      packageId
+      tagName
+      ownerName
+      packageName
+    }
+  }
+}

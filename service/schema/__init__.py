@@ -4,7 +4,7 @@ from service import packages_table
 from .types import Package, PackageSummary, PackageInput, PackageFilter, \
     PackageTag, PackageTagInput
 from .resolvers import get_package, get_package_summary, get_packages, get_package_tags
-from .mutations import CreatePackage
+from .mutations import CreatePackage, CreatePackageTag
 
 
 class RootQuery(ObjectType):
@@ -35,6 +35,8 @@ class RootQuery(ObjectType):
 
 class Mutations(ObjectType):
     create_package = CreatePackage.Field()
+
+    create_package_tag = CreatePackageTag.Field()
 
 
 schema = Schema(query=RootQuery, mutation=Mutations)
