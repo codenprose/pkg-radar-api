@@ -113,6 +113,7 @@ class Author(ObjectType):
     def resolve_email(root, args, context, info):
         return root['email']
 
+
 # Package Tags
 class PackageTag(ObjectType):
     package_id = ID(required=True)
@@ -124,3 +125,20 @@ class PackageTag(ObjectType):
 class PackageTagInput(InputObjectType):
     package_id = ID(required=True)
     tag_name = String()
+
+
+# Package Recommendations
+class PackageRecommendation(ObjectType):
+    package_id = ID(required=True)
+    owner_name = String()
+    package_name = String()
+    recommendation_package_id = ID(required=True)
+    recommendation_owner_name = String(required=True)
+    recommendation_package_name = String(required=True)
+
+
+class PackageRecommendationInput(InputObjectType):
+    package_id = ID(required=True)
+    recommendation_package_id = ID()
+    recommendation_owner_name = String()
+    recommendation_package_name = String()

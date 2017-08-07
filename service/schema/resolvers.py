@@ -3,8 +3,8 @@ import requests
 import uuid
 from datetime import datetime
 
-from service import packages_table, package_tags_table
-from .types import Package, PackageTag
+from service import packages_table, package_tags_table, package_recommendations_table
+from .types import Package, PackageTag, PackageRecommendation
 
 
 # Queries
@@ -22,8 +22,13 @@ def get_package(root, args, context, info):
     )
 
     item = data['Item']
+    
+    print('-' * 50)
+    print('Consumed Capacity: Package')
+    print('-' * 50)
+    print(data['ConsumedCapacity'])
 
-    response = Package(
+    return Package(
         archive=item['archive'],
         backlog=item['backlog'],
         color=item['color'],
@@ -46,13 +51,6 @@ def get_package(root, args, context, info):
         trial=item['trial'],
         website_url=item['website_url']
     )
-    
-    print('-' * 50)
-    print('Consumed Capacity: Package')
-    print('-' * 50)
-    print(data['ConsumedCapacity'])
-
-    return response
 
 
 def get_package_summary(root, args, context, info):
@@ -69,7 +67,12 @@ def get_package_summary(root, args, context, info):
 
     item = data['Items'][0]
 
-    response = Package(
+    print('-' * 50)
+    print('Consumed Capacity: Package Summary')
+    print('-' * 50)
+    print(data['ConsumedCapacity'])
+
+    return Package(
         color=item['color'],
         description=item['description'],
         issues=item['issues'],
@@ -79,13 +82,6 @@ def get_package_summary(root, args, context, info):
         package_name=package_name,
         stars=item['stars'],
     )
-
-    print('-' * 50)
-    print('Consumed Capacity: Package Summary')
-    print('-' * 50)
-    print(data['ConsumedCapacity'])
-
-    return response
 
 
 def get_packages(root, args, context, info):
@@ -100,8 +96,8 @@ def get_packages(root, args, context, info):
             ReturnConsumedCapacity='INDEXES'
         )
 
-    response = []
     packages = data['Items']
+    response = []
 
     for item in packages:
         response.append(
@@ -132,8 +128,8 @@ def get_package_tags(root, args, context, info):
         ReturnConsumedCapacity='INDEXES'
     )
 
-    response = []
     tags = data['Items']
+    response = []
 
     for item in tags:
         response.append(
@@ -144,6 +140,33 @@ def get_package_tags(root, args, context, info):
         )
     return response
 
+
+def get_package_recommendations(root, args, context, info):
+    payload = args.get('payload')
+    package_id = payload['package_id']
+
+    data = package_recommendations_table.query(
+        IndexName='all-recommendations',
+        ExpressionAttributeValues={':id': package_id},
+        KeyConditionExpression='package_id = :id',
+        ReturnConsumedCapacity='INDEXES'
+    )
+
+    recommendations = data['Items']
+    response = []
+
+    # Add get batch item logic
+    for item in recommendations:
+        response.append(
+            PackageRecommendation(
+                package_id=item['package_id'],
+                recommendation_owner_name = item['recommendation_owner_name'],
+                recommendation_package_name = item['recommendation_package_name']
+            )
+        )
+
+    return response
+    
 
 # Mutations
 def create_package(owner, name, user):

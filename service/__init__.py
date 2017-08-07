@@ -9,5 +9,6 @@ db_c = session.client('dynamodb')
 
 packages_table = db_r.Table('pkg_radar_dev_packages')
 package_tags_table = db_r.Table('pkg_radar_dev_package_tags')
+package_recommendations_table = db_r.Table('pkg_radar_dev_package_recommendations')
 
 from service import views

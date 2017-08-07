@@ -4,3 +4,10 @@ query getPackageTags($packageId: ID!) {
     tagName
   }
 }
+
+query getPackageRecommendations($packageId: ID!) {
+  packageRecommendations(payload: { packageId: $packageId }) {
+    recommendationOwnerName
+    recommendationPackageName
+  }
+}
