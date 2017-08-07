@@ -1,8 +1,9 @@
 from graphene import Schema, ObjectType, String, Field, List
 
 from service import packages_table
-from .types import Package, PackageSummary, PackageInput, PackageFilter
-from .resolvers import get_package, get_package_summary, get_packages
+from .types import Package, PackageSummary, PackageInput, PackageFilter, \
+    PackageTag, PackageTagInput
+from .resolvers import get_package, get_package_summary, get_packages, get_package_tags
 from .mutations import CreatePackage
 
 
@@ -23,6 +24,12 @@ class RootQuery(ObjectType):
         PackageSummary,
         filter=PackageFilter(),
         resolver=get_packages
+    )
+
+    package_tags = List(
+        PackageTag,
+        payload=PackageTagInput(),
+        resolver=get_package_tags
     )
 
 

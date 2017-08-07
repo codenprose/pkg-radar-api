@@ -112,3 +112,13 @@ class Author(ObjectType):
 
     def resolve_email(root, args, context, info):
         return root['email']
+
+# Package Tags
+class PackageTag(ObjectType):
+    tag_name = String(required=True)
+    package_id = ID(required=True)
+
+
+class PackageTagInput(InputObjectType):
+    tag_name = String(required=True)
+    package_id = String(required=True)

@@ -17,3 +17,24 @@ class CreatePackage(Mutation):
 
         package = create_package(owner, name, 'admin')
         return CreatePackage(package=package)
+
+
+# TODO: Add Create Package Tag mutation
+
+
+# TODO: Add Delete Package Tag mutation
+
+
+# TODO: Add Create Package Recommendation mutation
+
+
+# TODO: Add Delete Package Recommendation mutation
+
+
+# TODO: Add Create User Kanban Package mutation
+
+
+# TODO: Add Update User Kanban Package mutation
+
+
+# TODO: Add Delete User Kanban Package mutation

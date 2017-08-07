@@ -3,10 +3,11 @@ import requests
 import uuid
 from datetime import datetime
 
-from service import packages_table
-from .types import Package
+from service import packages_table, package_tags_table
+from .types import Package, PackageTag
 
 
+# Queries
 def get_package(root, args, context, info):
     payload = args.get('payload')
     owner_name = payload['owner_name']
@@ -36,7 +37,6 @@ def get_package(root, args, context, info):
         mentionable_users=item['mentionable_users'],
         owner_avatar=item['owner_avatar'],
         owner_name=item['owner_name'],
-        package_avatar=item['package_avatar'],
         package_name=item['package_name'],
         production=item['production'],
         pull_requests=item['pull_requests'],
@@ -119,6 +119,42 @@ def get_packages(root, args, context, info):
     
     return response
 
+
+def get_package_tags(root, args, context, info):
+    payload = args.get('payload')
+    tag_name = payload['tag_name']
+    package_id = payload['package_id']
+
+    data = package_tags_table.get_item(
+        Key={
+            'tag_name': tag_name,
+            'package_id': package_id
+        },
+        ReturnConsumedCapacity='TOTAL'
+    )
+
+    response = []
+    tags = data['Items'] if 'Items' in data else data['Item']
+
+    if type(tags) == list:
+        for item in tags:
+            response.append(
+                PackageTag(
+                    tag_name=item['tag_name'],
+                    package_id=item['package_id']
+                )
+            )
+    else:
+        response.append(
+            PackageTag(
+                tag_name=tags['tag_name'],
+                package_id=tags['package_id']
+            )
+        )
+    return response
+
+
+# Mutations
 def create_package(owner, name, user):
     endpoint = 'https://rc5s84uwm4.execute-api.us-east-1.amazonaws.com/dev/service'
     payload = { 'owner': owner, 'name': name }
