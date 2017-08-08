@@ -63,7 +63,7 @@ def get_package_summary(root, args, context, info):
     package_name = payload['package_name']
 
     data = packages_table.query(
-        IndexName='summary_index',
+        IndexName='summary-index',
         ExpressionAttributeValues={
             ':oname': owner_name, ':pname': package_name},
         KeyConditionExpression='owner_name = :oname AND package_name = :pname',
@@ -187,13 +187,27 @@ def get_user_kanban_packages(root, args, context, info):
     response = []
 
     for item in kanban_packages:
+        package_summary_args = {
+            'payload': {
+                'owner_name': item['owner_name'],
+                'package_name': item['package_name']
+            }
+        }
+        # Get package summary data
+        package = get_package_summary(root, package_summary_args, context, info)
+
         response.append(
             UserKanbanPackage(
                 board=item['board'],
+                color=package.color,
+                issues=package.issues,
+                language=package.language,
+                owner_avatar=package.owner_avatar,
                 owner_name=item['owner_name'],
                 package_id=item['package_id'],
                 package_name=item['package_name'],
                 status=item['status'],
+                stars=package.stars,
                 user_id=item['user_id']
             )
         )

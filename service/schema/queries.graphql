@@ -15,10 +15,15 @@ query getPackageRecommendations($packageId: ID!) {
 query getUserKanbanPackages($userId: ID!) {
   userKanbanPackages(payload: { userId: $userId }) {
     board
+    color
+    issues
+    language
+    ownerAvatar
     ownerName
     packageId
     packageName
     status
+    stars
     userId
   }
 }

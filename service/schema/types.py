@@ -145,9 +145,14 @@ class PackageRecommendationsInput(InputObjectType):
 # Users
 class UserKanbanPackage(ObjectType):
     board = String(required=True)
+    color = String()
+    issues = String()
+    language = String()
+    owner_avatar = String()
     owner_name = String(required=True)
     package_id = ID(required=True)
     package_name = String(required=True)
+    stars = String()
     status = String(required=True)
     user_id = ID(required=True)
 
