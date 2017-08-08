@@ -106,3 +106,57 @@ mutation createUserKanbanPackage(
     }
   }
 }
+
+mutation updateUserKanbanPackage(
+  $board: String!, 
+  $ownerName: String!, 
+  $packageId: ID!, 
+  $packageName: String!, 
+  $status: String!, 
+  $userId: ID!
+) {
+  updateUserKanbanPackage(
+    board: $board, 
+    ownerName: $ownerName, 
+    packageId: $packageId, 
+    packageName: $packageName, 
+    status: $status, 
+    userId: $userId
+  ) {
+    userKanbanPackage {
+      board
+      ownerName
+      packageId
+      packageName
+      status
+      userId
+    }
+  }
+}
+
+mutation deleteUserKanbanPackage(
+  $board: String!, 
+  $ownerName: String!, 
+  $packageId: ID!, 
+  $packageName: String!, 
+  $status: String!, 
+  $userId: ID!
+) {
+  deleteUserKanbanPackage(
+    board: $board, 
+    ownerName: $ownerName, 
+    packageId: $packageId, 
+    packageName: $packageName, 
+    status: $status, 
+    userId: $userId
+  ) {
+    userKanbanPackage {
+      board
+      ownerName
+      packageId
+      packageName
+      status
+      userId
+    }
+  }
+}
