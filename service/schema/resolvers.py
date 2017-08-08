@@ -29,6 +29,8 @@ def get_package(root, args, context, info):
     print('-' * 50)
     print(data['ConsumedCapacity'])
 
+    tags = get_package_tags(root, { 'payload': { 'package_id': item['id'] }}, context, info)
+
     return Package(
         archive=item['archive'],
         backlog=item['backlog'],
@@ -49,6 +51,7 @@ def get_package(root, args, context, info):
         readme=item['readme'],
         repo_url=item['repo_url'],
         stars=item['stars'],
+        tags=tags,
         trial=item['trial'],
         website_url=item['website_url']
     )

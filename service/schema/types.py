@@ -25,6 +25,7 @@ class Package(ObjectType):
     readme = Field(lambda: Readme)
     repo_url = String(required=True)
     stars = Int(required=True)
+    tags = List(lambda: PackageTag)
     trial = Int(required=True)
     updated_at = String()
     website_url = String()
