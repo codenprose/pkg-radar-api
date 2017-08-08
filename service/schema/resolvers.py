@@ -100,6 +100,7 @@ def get_packages(root, args, context, info):
             KeyConditionExpression='#L = :l',
             ReturnConsumedCapacity='INDEXES'
         )
+    # Add more filter cases here
 
     packages = data['Items']
     response = []

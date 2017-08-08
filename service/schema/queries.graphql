@@ -1,3 +1,73 @@
+query getPackage($ownerName: String!, $packageName: String!) {
+  package(payload: { ownerName: $ownerName, packageName: $packageName}) {
+    archive
+    backlog
+    color
+    description
+    id
+    issues
+    language
+    lastCommit {
+      author {
+        date
+        name
+      }
+      commitUrl
+      message
+    }
+    lastRelease {
+      name
+      description
+      publishedAt
+      url
+    }
+    license
+    mentionableUsers
+    ownerAvatar
+    ownerName
+    packageName
+    production
+    pullRequests
+    readme {
+      extension
+      text
+    }
+    repoUrl
+    stars
+    tags {
+      tagName
+    }
+    trial
+    websiteUrl
+  }
+}
+
+query getPackageSummary($ownerName: String!, $packageName: String!) {
+  packageSummary(payload: { ownerName: $ownerName, packageName: $packageName}) {
+    color
+    description
+    issues
+    language
+    ownerAvatar
+    ownerName
+    packageName
+    stars
+  }
+}
+
+query getPackagesByLanguage($language: String!) {
+  packages(filter: { language: $language }) {
+    color
+    description
+    issues
+    language
+    ownerAvatar
+    ownerName
+    packageName
+    stars
+  }
+}
+
 query getPackageTags($packageId: ID!) {
   packageTags(payload: { packageId: $packageId }) {
     packageId
