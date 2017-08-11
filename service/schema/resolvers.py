@@ -4,11 +4,48 @@ import uuid
 from datetime import datetime
 
 from service import packages_table, package_tags_table, package_recommendations_table, \
-    user_kanban_packages_table
-from .types import Package, PackageTag, PackageRecommendation, UserKanbanPackage
+    user_kanban_packages_table, users_table
+from .types import Package, PackageTag, PackageRecommendation, UserKanbanPackage, User
 
 
 # Queries
+def get_current_user(root, args, context, info):
+    payload = args.get('payload')
+    username = payload['username']
+    token = payload['token']
+
+    # # validate token
+    # client_id = '1050d5bcb642ab0beb2e'
+    # client_secret = 'dacf3ed918494dd629207ff4ebfb05dee261ccc3'
+    #
+    # endpoint = 'https://api.github.com/applications/' + client_id + '/tokens/' + token
+    # user = requests.get(endpoint, auth=(client_id, client_secret))
+    #
+    # if user.status_code == 404:
+    #     return 'Token not valid'
+
+    data = users_table.get_item(
+        Key={
+            'username': username
+        }
+    )
+
+    item = data['Item']
+
+    return User(
+        id=item['id'],
+        avatar=item['avatar'],
+        bio=item['bio'] or '',
+        company=item['company'] or '',
+        website=item['website'] or '',
+        name=item['name'],
+        username=item['username'],
+        email=item['email'],
+        total_subscriptions=item['total_subscriptions'],
+        total_packages=item['total_packages']
+    )
+
+
 def get_package(root, args, context, info):
     payload = args.get('payload')
     owner_name = payload['owner_name']
@@ -217,6 +254,45 @@ def get_user_kanban_packages(root, args, context, info):
 
 
 # Mutations
+def create_user(**kwargs):
+    id = uuid.uuid4()
+    date = datetime.isoformat(datetime.now())
+
+    user = {
+        'avatar': kwargs['avatar'],
+        'bio': kwargs['bio'],
+        'company': kwargs['company'],
+        'created_at': date,
+        'email': kwargs['email'],
+        'github_id': kwargs['github_id'],
+        'id': str(id),
+        'location': kwargs['location'],
+        'name': kwargs['name'],
+        'total_packages': 0,
+        'total_subscriptions': 0,
+        'username': kwargs['username'],
+        'website': kwargs['website']
+    }
+
+    item = users_table.put_item(Item=user)
+
+    print('Successfully wrote user to DynamoDB')
+
+    return User(
+        avatar=user['avatar'],
+        bio=user['bio'],
+        company=user['company'],
+        created_at=user['created_at'],
+        email=user['email'],
+        id=user['id'],
+        name=user['name'],
+        total_packages=user['total_packages'],
+        total_subscriptions=user['total_subscriptions'],
+        username=user['username'],
+        website=user['website']
+    )
+
+
 def create_package(owner, name, user):
     endpoint = 'https://rc5s84uwm4.execute-api.us-east-1.amazonaws.com/dev/service'
     payload = {'owner': owner, 'name': name}

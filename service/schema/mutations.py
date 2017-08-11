@@ -1,9 +1,49 @@
 from graphene import Mutation, String, ID, Field
 
-from .types import Package, PackageTag, PackageRecommendation, UserKanbanPackage
+from .types import Package, PackageTag, PackageRecommendation, UserKanbanPackage, User
 from .resolvers import create_package, create_package_tag, delete_package_tag, \
     create_package_recommendation, delete_package_recommendation, create_user_kanban_package, \
-    update_user_kanban_package, delete_user_kanban_package
+    update_user_kanban_package, delete_user_kanban_package, create_user
+
+
+class CreateUser(Mutation):
+    class Input:
+        avatar = String(required=True)
+        bio = String(required=True)
+        company = String(required=True)
+        email = String(required=True)
+        github_id = String(required=True)
+        location = String(required=True)
+        name = String(required=True)
+        username = String(required=True)
+        website = String(required=True)
+
+    user = Field(lambda: User)
+
+    @staticmethod
+    def mutate(root, args, context, info):
+        avatar = args.get('avatar')
+        bio = args.get('bio')
+        company = args.get('company')
+        email = args.get('email')
+        github_id = args.get('github_id')
+        location = args.get('location')
+        name = args.get('name')
+        username = args.get('username')
+        website = args.get('website')
+
+        user = create_user(
+            avatar=avatar,
+            bio=bio,
+            company=company,
+            email=email,
+            github_id=github_id,
+            location=location,
+            name=name,
+            username=username,
+            website=website
+        )
+        return CreateUser(user=user)
 
 
 class CreatePackage(Mutation):
@@ -134,7 +174,7 @@ class CreateUserKanbanPackage(Mutation):
         package_name = String(required=True)
         status = String(required=True)
         user_id = ID(required=True)
-    
+
     user_kanban_package = Field(lambda: UserKanbanPackage)
 
     @staticmethod
@@ -166,7 +206,7 @@ class DeleteUserKanbanPackage(Mutation):
         package_name = String(required=True)
         status = String(required=True)
         user_id = ID(required=True)
-    
+
     user_kanban_package = Field(lambda: UserKanbanPackage)
 
     @staticmethod
@@ -198,7 +238,7 @@ class UpdateUserKanbanPackage(Mutation):
         package_name = String(required=True)
         status = String(required=True)
         user_id = ID(required=True)
-    
+
     user_kanban_package = Field(lambda: UserKanbanPackage)
 
     @staticmethod

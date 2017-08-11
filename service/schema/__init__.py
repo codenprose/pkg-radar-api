@@ -3,22 +3,23 @@ from graphene import Schema, ObjectType, String, Field, List
 from service import packages_table
 from .types import Package, PackageSummary, PackageInput, PackageFilter, \
     PackageTag, PackageTagInput, PackageRecommendation, PackageRecommendationsInput, \
-    UserKanbanPackage, UserKanbanPackageInput
+    UserKanbanPackage, UserKanbanPackageInput, User, CurrentUserInput
 from .resolvers import get_package, get_package_summary, get_packages, get_package_tags, \
-    get_package_recommendations, get_user_kanban_packages
+    get_package_recommendations, get_user_kanban_packages, create_user, get_current_user
 from .mutations import CreatePackage, CreatePackageTag, DeletePackageTag, CreatePackageRecommendation, \
-    DeletePackageRecommendation, CreateUserKanbanPackage, UpdateUserKanbanPackage, DeleteUserKanbanPackage
+    DeletePackageRecommendation, CreateUserKanbanPackage, UpdateUserKanbanPackage, DeleteUserKanbanPackage, \
+    CreateUser
 
 
 class RootQuery(ObjectType):
     package = Field(
-        Package, 
-        payload=PackageInput(), 
+        Package,
+        payload=PackageInput(),
         resolver=get_package
     )
 
     package_summary = Field(
-        PackageSummary, 
+        PackageSummary,
         payload=PackageInput(),
         resolver=get_package_summary
     )
@@ -47,6 +48,12 @@ class RootQuery(ObjectType):
         resolver=get_user_kanban_packages
     )
 
+    current_user = Field(
+        User,
+        payload=CurrentUserInput(),
+        resolver=get_current_user
+    )
+
 
 class Mutations(ObjectType):
     create_package = CreatePackage.Field()
@@ -64,6 +71,8 @@ class Mutations(ObjectType):
     update_user_kanban_package = UpdateUserKanbanPackage.Field()
 
     delete_user_kanban_package = DeleteUserKanbanPackage.Field()
+
+    create_user = CreateUser.Field()
 
 
 schema = Schema(query=RootQuery, mutation=Mutations)

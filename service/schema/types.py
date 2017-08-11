@@ -29,7 +29,7 @@ class Package(ObjectType):
     trial = Int(required=True)
     updated_at = String()
     website_url = String()
-    
+
 
 class PackageSummary(ObjectType):
     color = String(required=True)
@@ -60,7 +60,7 @@ class Readme(ObjectType):
 
     def resolve_text(root, args, context, info):
         return root['text']
-    
+
 
 class LastRelease(ObjectType):
     description = String()
@@ -143,6 +143,26 @@ class PackageRecommendationsInput(InputObjectType):
 
 
 # Users
+class User(ObjectType):
+    id = ID(required=True)
+    avatar = String(required=True)
+    bio = String()
+    company = String()
+    website = String()
+    created_at = String(required=True)
+    name = String(required=True)
+    username = String(required=True)
+    email = String(required=True)
+    total_subscriptions = Int(required=True)
+    total_packages = Int(required=True)
+    updated_at = String()
+
+
+class CurrentUserInput(InputObjectType):
+    username = String(required=True)
+    token = String(required=True)
+
+
 class UserKanbanPackage(ObjectType):
     board = String(required=True)
     color = String()
