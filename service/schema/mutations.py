@@ -3,7 +3,7 @@ from graphene import Mutation, String, ID, Field
 from .types import Package, PackageTag, PackageRecommendation, UserKanbanPackage, User
 from .resolvers import create_package, create_package_tag, delete_package_tag, \
     create_package_recommendation, delete_package_recommendation, create_user_kanban_package, \
-    update_user_kanban_package, delete_user_kanban_package, create_user
+    update_user_kanban_package, delete_user_kanban_package, create_user, login_user
 
 
 class CreateUser(Mutation):
@@ -44,6 +44,22 @@ class CreateUser(Mutation):
             website=website
         )
         return CreateUser(user=user)
+
+
+class LoginUser(Mutation):
+    class Input:
+        username = String(required=True)
+        token = String(required=True)
+
+    user = Field(lambda: User)
+
+    @staticmethod
+    def mutate(root, args, context, info):
+        username = args.get('username')
+        token = args.get('token')
+
+        user = login_user(username, token)
+        return LoginUser(user=user)
 
 
 class CreatePackage(Mutation):

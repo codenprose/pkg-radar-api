@@ -14,7 +14,7 @@ def get_current_user(root, args, context, info):
     username = payload['username']
     token = payload['token']
 
-    # # validate token
+    # TODO: validate token
     # client_id = '1050d5bcb642ab0beb2e'
     # client_secret = 'dacf3ed918494dd629207ff4ebfb05dee261ccc3'
     #
@@ -255,6 +255,31 @@ def get_user_kanban_packages(root, args, context, info):
 
 # Mutations
 def create_user(**kwargs):
+    # Check if user already exists
+    user_exists = users_table.get_item(
+        Key={
+            'username': kwargs['username']
+        }
+    )
+
+    if 'Item' in user_exists:
+        print('User already exists')
+        user_exists_item = user_exists['Item']
+
+        return User(
+            avatar=user_exists_item['avatar'],
+            bio=user_exists_item['bio'],
+            company=user_exists_item['company'],
+            created_at=user_exists_item['created_at'],
+            email=user_exists_item['email'],
+            id=user_exists_item['id'],
+            name=user_exists_item['name'],
+            total_packages=user_exists_item['total_packages'],
+            total_subscriptions=user_exists_item['total_subscriptions'],
+            username=user_exists_item['username'],
+            website=user_exists_item['website']
+        )
+
     id = uuid.uuid4()
     date = datetime.isoformat(datetime.now())
 
@@ -290,6 +315,31 @@ def create_user(**kwargs):
         total_subscriptions=user['total_subscriptions'],
         username=user['username'],
         website=user['website']
+    )
+
+
+def login_user(username, token):
+    # validate token
+
+    item = users_table.get_item(
+        Key={
+            'username': username
+        }
+    )
+
+    item = data['Item']
+
+    return User(
+        id=item['id'],
+        avatar=item['avatar'],
+        bio=item['bio'] or '',
+        company=item['company'] or '',
+        website=item['website'] or '',
+        name=item['name'],
+        username=item['username'],
+        email=item['email'],
+        total_subscriptions=item['total_subscriptions'],
+        total_packages=item['total_packages']
     )
 
 
