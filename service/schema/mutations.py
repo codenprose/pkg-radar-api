@@ -1,9 +1,10 @@
-from graphene import Mutation, String, ID, Field
+from graphene import Mutation, String, ID, Field, List
 
-from .types import Package, PackageTag, PackageRecommendation, UserKanbanPackage, User
+from .types import Package, PackageTag, PackageRecommendation, UserKanbanPackage, User, \
+    KanbanCard, KanbanCardInput
 from .resolvers import create_package, create_package_tag, delete_package_tag, \
     create_package_recommendation, delete_package_recommendation, create_user_kanban_package, \
-    update_user_kanban_package, delete_user_kanban_package, create_user, login_user
+    update_user_kanban_package, delete_user_kanban_package, create_user, login_user, update_user
 
 
 class CreateUser(Mutation):
@@ -276,3 +277,23 @@ class UpdateUserKanbanPackage(Mutation):
         )
 
         return UpdateUserKanbanPackage(user_kanban_package=user_kanban_package)
+
+
+class UpdateUser(Mutation):
+    class Input:
+        username = String(required=True)
+        kanban_card_positions = List(KanbanCardInput)
+
+    user = Field(lambda: User)
+
+    @staticmethod
+    def mutate(root, args, context, info):
+        username = args.get('username')
+        kanban_card_positions = args.get('kanban_card_positions')
+
+        user = update_user(
+            username=username,
+            kanban_card_positions=kanban_card_positions
+        )
+
+        return UpdateUser(user=user)

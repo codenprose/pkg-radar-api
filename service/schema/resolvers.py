@@ -37,12 +37,14 @@ def get_current_user(root, args, context, info):
         avatar=item['avatar'],
         bio=item['bio'] or '',
         company=item['company'] or '',
-        website=item['website'] or '',
-        name=item['name'],
-        username=item['username'],
         email=item['email'],
+        kanban_boards=item['kanban_boards'] or [],
+        kanban_card_positions=item['kanban_card_positions'] or [],
+        name=item['name'],
         total_subscriptions=item['total_subscriptions'],
-        total_packages=item['total_packages']
+        total_packages=item['total_packages'],
+        username=item['username'],
+        website=item['website'] or '',
     )
 
 
@@ -238,6 +240,7 @@ def get_user_kanban_packages(root, args, context, info):
             UserKanbanPackage(
                 board=item['board'],
                 color=package.color,
+                description=package.description,
                 issues=package.issues,
                 language=package.language,
                 owner_avatar=package.owner_avatar,
@@ -273,6 +276,8 @@ def create_user(**kwargs):
             created_at=user_exists_item['created_at'],
             email=user_exists_item['email'],
             id=user_exists_item['id'],
+            kanban_boards=user_exists_item['kanban_boards'],
+            kanban_card_positions=user_exists_item['kanban_card_positions'],
             name=user_exists_item['name'],
             total_packages=user_exists_item['total_packages'],
             total_subscriptions=user_exists_item['total_subscriptions'],
@@ -291,6 +296,8 @@ def create_user(**kwargs):
         'email': kwargs['email'],
         'github_id': kwargs['github_id'],
         'id': str(id),
+        'kanban_boards': ['All'],
+        'kanban_card_positions': [],
         'location': kwargs['location'],
         'name': kwargs['name'],
         'total_packages': 0,
@@ -310,6 +317,8 @@ def create_user(**kwargs):
         created_at=user['created_at'],
         email=user['email'],
         id=user['id'],
+        kanban_boards=user['kanban_boards'],
+        kanban_card_positions=user['kanban_card_positions'],
         name=user['name'],
         total_packages=user['total_packages'],
         total_subscriptions=user['total_subscriptions'],
@@ -330,16 +339,62 @@ def login_user(username, token):
     item = data['Item']
 
     return User(
-        id=item['id'],
         avatar=item['avatar'],
         bio=item['bio'] or '',
         company=item['company'] or '',
-        website=item['website'] or '',
-        name=item['name'],
-        username=item['username'],
         email=item['email'],
+        id=item['id'],
+        kanban_boards=user['kanban_boards'],
+        kanban_card_positions=user['kanban_card_positions'],
+        name=item['name'],
         total_subscriptions=item['total_subscriptions'],
-        total_packages=item['total_packages']
+        total_packages=item['total_packages'],
+        username=item['username'],
+        website=item['website'] or '',
+    )
+
+
+def update_user(**kwargs):
+    user = {}
+    attributes = {}
+
+    for key in kwargs:
+        user[key] = kwargs[key]
+
+        if key != 'username':
+            attributes[key] = {
+                'Value': user[key],
+                'Action': 'PUT'
+            }
+
+    item = users_table.update_item(
+        Key={ 'username': user['username'] },
+        AttributeUpdates=attributes,
+        ReturnValues='ALL_OLD'
+    )
+
+    data = item['Attributes']
+
+    print('Successfully wrote to DynamoDB')
+    print(item)
+
+    for key in user:
+        if key != 'username':
+            data[key] = user[key]
+
+    return User(
+        id=data['id'],
+        avatar=data['avatar'],
+        bio=data['bio'] or '',
+        company=data['company'] or '',
+        email=data['email'],
+        kanban_boards=data['kanban_boards'] or [],
+        kanban_card_positions=data['kanban_card_positions'] or [],
+        name=data['name'],
+        total_subscriptions=data['total_subscriptions'],
+        total_packages=data['total_packages'],
+        username=data['username'],
+        website=data['website'] or '',
     )
 
 

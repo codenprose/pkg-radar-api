@@ -8,7 +8,7 @@ from .resolvers import get_package, get_package_summary, get_packages, get_packa
     get_package_recommendations, get_user_kanban_packages, create_user, get_current_user
 from .mutations import CreatePackage, CreatePackageTag, DeletePackageTag, CreatePackageRecommendation, \
     DeletePackageRecommendation, CreateUserKanbanPackage, UpdateUserKanbanPackage, DeleteUserKanbanPackage, \
-    CreateUser, LoginUser
+    CreateUser, LoginUser, UpdateUser
 
 
 class RootQuery(ObjectType):
@@ -76,6 +76,7 @@ class Mutations(ObjectType):
 
     login_user = LoginUser.Field()
 
+    update_user = UpdateUser.Field()
 
 
 schema = Schema(query=RootQuery, mutation=Mutations)
