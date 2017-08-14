@@ -238,7 +238,6 @@ def get_user_kanban_packages(root, args, context, info):
 
         response.append(
             UserKanbanPackage(
-                board=item['board'],
                 color=package.color,
                 description=package.description,
                 issues=package.issues,
@@ -548,7 +547,6 @@ def delete_package_recommendation(**kwargs):
 
 def create_user_kanban_package(**kwargs):
     user_kanban_package = {
-        'board': kwargs.get('board'),
         'owner_name': kwargs.get('owner_name'),
         'package_id': kwargs.get('package_id'),
         'package_name': kwargs.get('package_name'),
@@ -562,7 +560,6 @@ def create_user_kanban_package(**kwargs):
     print(item)
 
     return UserKanbanPackage(
-        board=user_kanban_package['board'],
         owner_name=user_kanban_package['owner_name'],
         package_id=user_kanban_package['package_id'],
         package_name=user_kanban_package['package_name'],
@@ -573,13 +570,13 @@ def create_user_kanban_package(**kwargs):
 
 def update_user_kanban_package(**kwargs):
     user_kanban_package = {
-        'board': kwargs.get('board'),
-        'owner_name': kwargs.get('owner_name'),
         'package_id': kwargs.get('package_id'),
-        'package_name': kwargs.get('package_name'),
         'status': kwargs.get('status'),
         'user_id': kwargs.get('user_id')
     }
+
+    print('-' * 30)
+    print(user_kanban_package['status'])
 
     item = user_kanban_packages_table.update_item(
         Key={
@@ -590,31 +587,27 @@ def update_user_kanban_package(**kwargs):
             'status': {
                 'Value': user_kanban_package['status'],
                 'Action': 'PUT'
-            },
-            'board': {
-                'Value': user_kanban_package['board'],
-                'Action': 'PUT'
             }
         },
-        ReturnValues='ALL_NEW'
+        ReturnValues='ALL_OLD'
     )
 
     print('Successfully wrote to DynamoDB')
     print(item)
 
+    data = item['Attributes']
+
     return UserKanbanPackage(
-        board=user_kanban_package['board'],
-        owner_name=user_kanban_package['owner_name'],
-        package_id=user_kanban_package['package_id'],
-        package_name=user_kanban_package['package_name'],
+        owner_name=data['owner_name'],
+        package_id=data['package_id'],
+        package_name=data['package_name'],
         status=user_kanban_package['status'],
-        user_id=user_kanban_package['user_id']
+        user_id=data['user_id']
     )
 
 
 def delete_user_kanban_package(**kwargs):
     user_kanban_package = {
-        'board': kwargs.get('board'),
         'owner_name': kwargs.get('owner_name'),
         'package_id': kwargs.get('package_id'),
         'package_name': kwargs.get('package_name'),
@@ -633,7 +626,6 @@ def delete_user_kanban_package(**kwargs):
     print(item)
 
     return UserKanbanPackage(
-        board=user_kanban_package['board'],
         owner_name=user_kanban_package['owner_name'],
         package_id=user_kanban_package['package_id'],
         package_name=user_kanban_package['package_name'],

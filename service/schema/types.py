@@ -164,10 +164,8 @@ class KanbanCard(ObjectType):
     board = String(required=True)
     owner_name = String(required=True)
     package_name = String(required=True)
-    status = String(required=True) # remove
 
     def resolve_board(root, args, context, info):
-        print(root)
         return root['board']
 
     def resolve_owner_name(root, args, context, info):
@@ -176,15 +174,11 @@ class KanbanCard(ObjectType):
     def resolve_package_name(root, args, context, info):
         return root['package_name']
 
-    def resolve_status(root, args, context, info):
-        return root['status']
-
 
 class KanbanCardInput(InputObjectType):
     board = String(required=True)
     owner_name = String(required=True)
     package_name = String(required=True)
-    status = String(required=True)
 
 
 class CurrentUserInput(InputObjectType):
@@ -193,7 +187,6 @@ class CurrentUserInput(InputObjectType):
 
 
 class UserKanbanPackage(ObjectType):
-    board = String(required=True) # remove
     color = String()
     description = String()
     issues = String()

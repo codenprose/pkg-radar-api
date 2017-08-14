@@ -29,11 +29,11 @@ mutation deletePackageTag($tagName: String!, $packageId: ID!) {
       packageId
       tagName
     }
-  }	
+  }
 }
 
 mutation createPackageRecommendation(
-  $packageId: ID!, 
+  $packageId: ID!,
   $ownerName: String!,
   $packageName: String!,
   $recommendationPackageId: ID!,
@@ -60,7 +60,7 @@ mutation createPackageRecommendation(
 }
 
 mutation deletePackageRecommendation(
-  $packageId: ID!, 
+  $packageId: ID!,
   $recommendationPackageId: ID!,
   $recommendationOwnerName: String!,
   $recommendationPackageName: String!
@@ -81,19 +81,19 @@ mutation deletePackageRecommendation(
 }
 
 mutation createUserKanbanPackage(
-  $board: String!, 
-  $ownerName: String!, 
-  $packageId: ID!, 
-  $packageName: String!, 
-  $status: String!, 
+  $board: String!,
+  $ownerName: String!,
+  $packageId: ID!,
+  $packageName: String!,
+  $status: String!,
   $userId: ID!
 ) {
   createUserKanbanPackage(
-    board: $board, 
-    ownerName: $ownerName, 
-    packageId: $packageId, 
-    packageName: $packageName, 
-    status: $status, 
+    board: $board,
+    ownerName: $ownerName,
+    packageId: $packageId,
+    packageName: $packageName,
+    status: $status,
     userId: $userId
   ) {
     userKanbanPackage {
@@ -107,27 +107,10 @@ mutation createUserKanbanPackage(
   }
 }
 
-mutation updateUserKanbanPackage(
-  $board: String!, 
-  $ownerName: String!, 
-  $packageId: ID!, 
-  $packageName: String!, 
-  $status: String!, 
-  $userId: ID!
-) {
-  updateUserKanbanPackage(
-    board: $board, 
-    ownerName: $ownerName, 
-    packageId: $packageId, 
-    packageName: $packageName, 
-    status: $status, 
-    userId: $userId
-  ) {
+mutation updateUserKanbanPackage($packageId: ID!, $status: String!, $userId: ID!) {
+  updateUserKanbanPackage(packageId: $packageId, status: $status, userId: $userId) {
     userKanbanPackage {
-      board
-      ownerName
       packageId
-      packageName
       status
       userId
     }
@@ -135,19 +118,19 @@ mutation updateUserKanbanPackage(
 }
 
 mutation deleteUserKanbanPackage(
-  $board: String!, 
-  $ownerName: String!, 
-  $packageId: ID!, 
-  $packageName: String!, 
-  $status: String!, 
+  $board: String!,
+  $ownerName: String!,
+  $packageId: ID!,
+  $packageName: String!,
+  $status: String!,
   $userId: ID!
 ) {
   deleteUserKanbanPackage(
-    board: $board, 
-    ownerName: $ownerName, 
-    packageId: $packageId, 
-    packageName: $packageName, 
-    status: $status, 
+    board: $board,
+    ownerName: $ownerName,
+    packageId: $packageId,
+    packageName: $packageName,
+    status: $status,
     userId: $userId
   ) {
     userKanbanPackage {
