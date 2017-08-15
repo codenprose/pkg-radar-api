@@ -185,7 +185,6 @@ class DeletePackageRecommendation(Mutation):
 
 class CreateUserKanbanPackage(Mutation):
     class Input:
-        board = String(required=True)
         owner_name = String(required=True)
         package_id = ID(required=True)
         package_name = String(required=True)
@@ -196,7 +195,6 @@ class CreateUserKanbanPackage(Mutation):
 
     @staticmethod
     def mutate(root, args, context, info):
-        board = args.get('board')
         owner_name = args.get('owner_name')
         package_id = args.get('package_id')
         package_name = args.get('package_name')
@@ -204,7 +202,6 @@ class CreateUserKanbanPackage(Mutation):
         user_id = args.get('user_id')
 
         user_kanban_package = create_user_kanban_package(
-            board=board,
             owner_name=owner_name,
             package_id=package_id,
             package_name=package_name,
@@ -217,30 +214,18 @@ class CreateUserKanbanPackage(Mutation):
 
 class DeleteUserKanbanPackage(Mutation):
     class Input:
-        board = String(required=True)
-        owner_name = String(required=True)
         package_id = ID(required=True)
-        package_name = String(required=True)
-        status = String(required=True)
         user_id = ID(required=True)
 
     user_kanban_package = Field(lambda: UserKanbanPackage)
 
     @staticmethod
     def mutate(root, args, context, info):
-        board = args.get('board')
-        owner_name = args.get('owner_name')
         package_id = args.get('package_id')
-        package_name = args.get('package_name')
-        status = args.get('status')
         user_id = args.get('user_id')
 
         user_kanban_package = delete_user_kanban_package(
-            board=board,
-            owner_name=owner_name,
             package_id=package_id,
-            package_name=package_name,
-            status=status,
             user_id=user_id
         )
 
@@ -274,17 +259,17 @@ class UpdateUser(Mutation):
     class Input:
         username = String(required=True)
         kanban_card_positions = List(KanbanCardInput)
+        kanban_boards = List(String)
 
     user = Field(lambda: User)
 
     @staticmethod
     def mutate(root, args, context, info):
-        username = args.get('username')
-        kanban_card_positions = args.get('kanban_card_positions')
+        data = {}
 
-        user = update_user(
-            username=username,
-            kanban_card_positions=kanban_card_positions
-        )
+        for item in args:
+            data[item] = args.get(item)
+
+        user = update_user(**data)
 
         return UpdateUser(user=user)

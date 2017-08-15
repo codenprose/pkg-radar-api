@@ -608,10 +608,7 @@ def update_user_kanban_package(**kwargs):
 
 def delete_user_kanban_package(**kwargs):
     user_kanban_package = {
-        'owner_name': kwargs.get('owner_name'),
         'package_id': kwargs.get('package_id'),
-        'package_name': kwargs.get('package_name'),
-        'status': kwargs.get('status'),
         'user_id': kwargs.get('user_id')
     }
 
@@ -619,16 +616,19 @@ def delete_user_kanban_package(**kwargs):
         Key={
             'package_id': user_kanban_package['package_id'],
             'user_id': user_kanban_package['user_id']
-        }
+        },
+        ReturnValues='ALL_OLD'
     )
 
     print('Successfully wrote to DynamoDB')
     print(item)
 
+    data = item['Attributes']
+
     return UserKanbanPackage(
-        owner_name=user_kanban_package['owner_name'],
-        package_id=user_kanban_package['package_id'],
-        package_name=user_kanban_package['package_name'],
-        status=user_kanban_package['status'],
-        user_id=user_kanban_package['user_id']
+        owner_name=data['owner_name'],
+        package_id=data['package_id'],
+        package_name=data['package_name'],
+        status=data['status'],
+        user_id=data['user_id']
     )
