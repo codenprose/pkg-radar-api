@@ -186,6 +186,10 @@ class CurrentUserInput(InputObjectType):
     token = String(required=True)
 
 
+class UserInput(InputObjectType):
+    username = String(required=True)
+
+
 class UserKanbanPackage(ObjectType):
     color = String()
     description = String()
@@ -197,8 +201,9 @@ class UserKanbanPackage(ObjectType):
     package_name = String(required=True)
     stars = String()
     status = String(required=True)
-    user_id = ID(required=True)
+    user_id = ID()
+    username = String(required=True)
 
 
 class UserKanbanPackageInput(InputObjectType):
-    user_id = ID(required=True)
+    username = String(required=True)

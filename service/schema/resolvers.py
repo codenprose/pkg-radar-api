@@ -48,6 +48,34 @@ def get_current_user(root, args, context, info):
     )
 
 
+def get_user(root, args, context, info):
+    payload = args.get('payload')
+    username = payload['username']
+
+    data = users_table.get_item(
+        Key={
+            'username': username
+        }
+    )
+
+    item = data['Item']
+
+    return User(
+        id=item['id'],
+        avatar=item['avatar'],
+        bio=item['bio'] or '',
+        company=item['company'] or '',
+        email=item['email'],
+        kanban_boards=item['kanban_boards'] or [],
+        kanban_card_positions=item['kanban_card_positions'] or [],
+        name=item['name'],
+        total_subscriptions=item['total_subscriptions'],
+        total_packages=item['total_packages'],
+        username=item['username'],
+        website=item['website'] or '',
+    )
+
+
 def get_package(root, args, context, info):
     payload = args.get('payload')
     owner_name = payload['owner_name']
@@ -111,7 +139,9 @@ def get_package_summary(root, args, context, info):
 
     item = data['Items'][0]
 
+    print('Package Summary')
     print('-' * 50)
+    print(item)
     print('Consumed Capacity: Package Summary')
     print('-' * 50)
     print(data['ConsumedCapacity'])
@@ -214,12 +244,12 @@ def get_package_recommendations(root, args, context, info):
 
 def get_user_kanban_packages(root, args, context, info):
     payload = args.get('payload')
-    user_id = payload['user_id']
+    username = payload['username']
 
     data = user_kanban_packages_table.query(
         IndexName='user-packages-index',
-        ExpressionAttributeValues={':user_id': user_id},
-        KeyConditionExpression='user_id = :user_id',
+        ExpressionAttributeValues={':username': username},
+        KeyConditionExpression='username = :username',
         ReturnConsumedCapacity='INDEXES'
     )
 
@@ -248,7 +278,8 @@ def get_user_kanban_packages(root, args, context, info):
                 package_name=item['package_name'],
                 status=item['status'],
                 stars=package.stars,
-                user_id=item['user_id']
+                user_id=item['user_id'],
+                username=item['username']
             )
         )
 
