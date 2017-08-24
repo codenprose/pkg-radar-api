@@ -189,7 +189,7 @@ class CreateUserKanbanPackage(Mutation):
         package_id = ID(required=True)
         package_name = String(required=True)
         status = String(required=True)
-        user_id = ID(required=True)
+        username = String(required=True)
 
     user_kanban_package = Field(lambda: UserKanbanPackage)
 
@@ -199,14 +199,14 @@ class CreateUserKanbanPackage(Mutation):
         package_id = args.get('package_id')
         package_name = args.get('package_name')
         status = args.get('status')
-        user_id = args.get('user_id')
+        username = args.get('username')
 
         user_kanban_package = create_user_kanban_package(
             owner_name=owner_name,
             package_id=package_id,
             package_name=package_name,
             status=status,
-            user_id=user_id
+            username=username
         )
 
         return CreateUserKanbanPackage(user_kanban_package=user_kanban_package)
@@ -215,18 +215,18 @@ class CreateUserKanbanPackage(Mutation):
 class DeleteUserKanbanPackage(Mutation):
     class Input:
         package_id = ID(required=True)
-        user_id = ID(required=True)
+        username = String(required=True)
 
     user_kanban_package = Field(lambda: UserKanbanPackage)
 
     @staticmethod
     def mutate(root, args, context, info):
         package_id = args.get('package_id')
-        user_id = args.get('user_id')
+        username = args.get('username')
 
         user_kanban_package = delete_user_kanban_package(
             package_id=package_id,
-            user_id=user_id
+            username=username
         )
 
         return DeleteUserKanbanPackage(user_kanban_package=user_kanban_package)
@@ -236,7 +236,7 @@ class UpdateUserKanbanPackage(Mutation):
     class Input:
         package_id = ID(required=True)
         status = String(required=True)
-        user_id = ID(required=True)
+        username = String(required=True)
 
     user_kanban_package = Field(lambda: UserKanbanPackage)
 
@@ -244,12 +244,12 @@ class UpdateUserKanbanPackage(Mutation):
     def mutate(root, args, context, info):
         package_id = args.get('package_id')
         status = args.get('status')
-        user_id = args.get('user_id')
+        username = args.get('username')
 
         user_kanban_package = update_user_kanban_package(
             package_id=package_id,
             status=status,
-            user_id=user_id
+            username=username
         )
 
         return UpdateUserKanbanPackage(user_kanban_package=user_kanban_package)

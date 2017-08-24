@@ -278,7 +278,6 @@ def get_user_kanban_packages(root, args, context, info):
                 package_name=item['package_name'],
                 status=item['status'],
                 stars=package.stars,
-                user_id=item['user_id'],
                 username=item['username']
             )
         )
@@ -582,7 +581,7 @@ def create_user_kanban_package(**kwargs):
         'package_id': kwargs.get('package_id'),
         'package_name': kwargs.get('package_name'),
         'status': kwargs.get('status'),
-        'user_id': kwargs.get('user_id')
+        'username': kwargs.get('username')
     }
 
     item = user_kanban_packages_table.put_item(Item=user_kanban_package)
@@ -595,7 +594,7 @@ def create_user_kanban_package(**kwargs):
         package_id=user_kanban_package['package_id'],
         package_name=user_kanban_package['package_name'],
         status=user_kanban_package['status'],
-        user_id=user_kanban_package['user_id']
+        username=user_kanban_package['username']
     )
 
 
@@ -603,7 +602,7 @@ def update_user_kanban_package(**kwargs):
     user_kanban_package = {
         'package_id': kwargs.get('package_id'),
         'status': kwargs.get('status'),
-        'user_id': kwargs.get('user_id')
+        'username': kwargs.get('username')
     }
 
     print('-' * 30)
@@ -612,7 +611,7 @@ def update_user_kanban_package(**kwargs):
     item = user_kanban_packages_table.update_item(
         Key={
             'package_id': user_kanban_package['package_id'],
-            'user_id': user_kanban_package['user_id']
+            'username': user_kanban_package['username']
         },
         AttributeUpdates={
             'status': {
@@ -633,20 +632,20 @@ def update_user_kanban_package(**kwargs):
         package_id=data['package_id'],
         package_name=data['package_name'],
         status=user_kanban_package['status'],
-        user_id=data['user_id']
+        username=data['username']
     )
 
 
 def delete_user_kanban_package(**kwargs):
     user_kanban_package = {
         'package_id': kwargs.get('package_id'),
-        'user_id': kwargs.get('user_id')
+        'username': kwargs.get('username')
     }
 
     item = user_kanban_packages_table.delete_item(
         Key={
             'package_id': user_kanban_package['package_id'],
-            'user_id': user_kanban_package['user_id']
+            'username': user_kanban_package['username']
         },
         ReturnValues='ALL_OLD'
     )
@@ -661,5 +660,5 @@ def delete_user_kanban_package(**kwargs):
         package_id=data['package_id'],
         package_name=data['package_name'],
         status=data['status'],
-        user_id=data['user_id']
+        username=data['username']
     )
