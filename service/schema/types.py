@@ -1,14 +1,18 @@
 from graphene import ObjectType, InputObjectType, String, ID, Int, Field, List
 from graphene.types.json import JSONString
+from graphene.types.generic import GenericScalar
 
 # Pacakges
 class Package(ObjectType):
     archive = Int(required=True)
     backlog = Int(required=True)
     color = String(required=True)
+    commits = Field(lambda: Commit)
+    contributors = Field(lambda: Contributors)
     created_at = String()
     created_by = ID()
     description = String(required=True)
+    forks = Int()
     id = ID(required=True)
     issues = Int(required=True)
     language = String(required=True)
@@ -23,11 +27,13 @@ class Package(ObjectType):
     production = Int(required=True)
     pull_requests = Int(required=True)
     readme = Field(lambda: Readme)
+    releases = Int()
     repo_url = String(required=True)
     stars = Int(required=True)
-    tags = List(lambda: PackageTag)
+    tags = List(String)
     trial = Int(required=True)
     updated_at = String()
+    watchers = Int()
     website_url = String()
 
 
@@ -100,6 +106,43 @@ class LastCommit(ObjectType):
         return root['oid']
 
 
+class Commit(ObjectType):
+    total = Int(required=True)
+    url = String(required=True)
+
+    def resolve_total(root, args, context, info):
+        return root['total']
+
+    def resolve_url(root, args, context, info):
+        return root['url']
+
+
+class Contributors(ObjectType):
+    top_100 = List(lambda: Contributor)
+    total = Int()
+
+    def resolve_top_100(root, args, context, info):
+        return root['top_100']
+
+    def resolve_total(root, args, context, info):
+        return root['total']
+
+
+class Contributor(ObjectType):
+    avatar = String()
+    url = String()
+    username = String()
+
+    def resolve_avatar(root, args, context, info):
+        return root['author']['avatar']
+
+    def resolve_url(root, args, context, info):
+        return root['author']['url']
+
+    def resolve_username(root, args, context, info):
+        return root['author']['username']
+
+
 class Author(ObjectType):
     date = String()
     name = String()
@@ -113,19 +156,6 @@ class Author(ObjectType):
 
     def resolve_email(root, args, context, info):
         return root['email']
-
-
-# Package Tags
-class PackageTag(ObjectType):
-    package_id = ID(required=True)
-    tag_name = String(required=True)
-    owner_name = String()
-    package_name = String()
-
-
-class PackageTagInput(InputObjectType):
-    package_id = ID(required=True)
-    tag_name = String()
 
 
 # Package Recommendations

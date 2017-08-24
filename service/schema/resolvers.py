@@ -2,10 +2,11 @@ import json
 import requests
 import uuid
 from datetime import datetime
+import pprint
 
 from service import packages_table, package_tags_table, package_recommendations_table, \
     user_kanban_packages_table, users_table
-from .types import Package, PackageTag, PackageRecommendation, UserKanbanPackage, User
+from .types import Package, PackageRecommendation, UserKanbanPackage, User
 
 
 # Queries
@@ -96,13 +97,14 @@ def get_package(root, args, context, info):
     print('-' * 50)
     print(data['ConsumedCapacity'])
 
-    tags = get_package_tags(root, { 'payload': { 'package_id': item['id'] }}, context, info)
-
     return Package(
         archive=item['archive'],
         backlog=item['backlog'],
         color=item['color'],
+        commits=item['commits'],
+        contributors=item['contributors'],
         description=item['description'],
+        forks=item['forks'],
         id=item['id'],
         issues=item['issues'],
         language=item['language'],
@@ -116,10 +118,12 @@ def get_package(root, args, context, info):
         production=item['production'],
         pull_requests=item['pull_requests'],
         readme=item['readme'],
+        releases=item['releases'],
         repo_url=item['repo_url'],
         stars=item['stars'],
-        tags=tags,
+        tags=item['tags'],
         trial=item['trial'],
+        watchers=item['watchers'],
         website_url=item['website_url']
     )
 
@@ -452,15 +456,17 @@ def create_package(owner, name, user):
     item = packages_table.put_item(Item=package)
 
     print('Successfully wrote to DynamoDB')
-    print(item)
 
     return Package(
         archive=package['archive'],
         backlog=package['backlog'],
         color=package['color'],
+        commits=package['commits'],
+        contributors=package['contributors'],
         created_at=package['created_at'],
         created_by=package['created_by'],
         description=package['description'],
+        forks=package['forks'],
         id=package['id'],
         issues=package['issues'],
         language=package['language'],
@@ -474,9 +480,11 @@ def create_package(owner, name, user):
         production=package['production'],
         pull_requests=package['pull_requests'],
         readme=package['readme'],
+        releases=package['releases'],
         repo_url=package['repo_url'],
         stars=package['stars'],
         trial=package['trial'],
+        watchers=package['watchers'],
         website_url=package['website_url']
     )
 

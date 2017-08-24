@@ -1,10 +1,10 @@
 from graphene import Mutation, String, ID, Field, List
 
-from .types import Package, PackageTag, PackageRecommendation, UserKanbanPackage, User, \
+from .types import Package,PackageRecommendation, UserKanbanPackage, User, \
     KanbanCard, KanbanCardInput
-from .resolvers import create_package, create_package_tag, delete_package_tag, \
-    create_package_recommendation, delete_package_recommendation, create_user_kanban_package, \
-    update_user_kanban_package, delete_user_kanban_package, create_user, login_user, update_user
+from .resolvers import create_package, create_package_recommendation, delete_package_recommendation,  \
+    create_user_kanban_package, update_user_kanban_package, delete_user_kanban_package, \
+    create_user, login_user, update_user
 
 
 class CreateUser(Mutation):
@@ -67,6 +67,7 @@ class CreatePackage(Mutation):
     class Input:
         owner = String(required=True)
         name = String(required=True)
+        username = String(required=True)
 
     package = Field(lambda: Package)
 
@@ -74,8 +75,9 @@ class CreatePackage(Mutation):
     def mutate(root, args, context, info):
         owner = args.get('owner')
         name = args.get('name')
+        user = args.get('username')
 
-        package = create_package(owner, name, 'admin')
+        package = create_package(owner, name, user)
         return CreatePackage(package=package)
 
 
