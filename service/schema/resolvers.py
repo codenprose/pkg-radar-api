@@ -431,7 +431,7 @@ def update_user(**kwargs):
     )
 
 
-def create_package(owner, name, user):
+def create_package(owner, name, created_by):
     endpoint = 'https://rc5s84uwm4.execute-api.us-east-1.amazonaws.com/dev/service'
     payload = {'owner': owner, 'name': name}
 
@@ -448,7 +448,7 @@ def create_package(owner, name, user):
     package['archive'] = 0
     package['backlog'] = 0
     package['created_at'] = date
-    package['created_by'] = user
+    package['created_by'] = created_by
     package['id'] = str(id)
     package['production'] = 0
     package['trial'] = 0

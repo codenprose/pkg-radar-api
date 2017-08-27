@@ -67,7 +67,7 @@ class CreatePackage(Mutation):
     class Input:
         owner = String(required=True)
         name = String(required=True)
-        username = String(required=True)
+        created_by = String(required=True)
 
     package = Field(lambda: Package)
 
@@ -75,9 +75,9 @@ class CreatePackage(Mutation):
     def mutate(root, args, context, info):
         owner = args.get('owner')
         name = args.get('name')
-        user = args.get('username')
+        created_by = args.get('created_by')
 
-        package = create_package(owner, name, user)
+        package = create_package(owner, name, created_by)
         return CreatePackage(package=package)
 
 
