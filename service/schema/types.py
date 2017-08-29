@@ -178,6 +178,7 @@ class User(ObjectType):
     avatar = String(required=True)
     bio = String()
     company = String()
+    connections = List(lambda: UserConnection)
     created_at = String(required=True)
     email = String(required=True)
     kanban_boards = List(String)
@@ -188,6 +189,17 @@ class User(ObjectType):
     updated_at = String()
     username = String(required=True)
     website = String()
+
+
+class UserConnection(ObjectType):
+    avatar = String()
+    bio = String()
+    name = String()
+    username = String(required=True)
+
+
+class UserConnectionInput(InputObjectType):
+    username = String(required=True)
 
 
 class KanbanCard(ObjectType):

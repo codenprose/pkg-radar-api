@@ -2,10 +2,12 @@ from graphene import Schema, ObjectType, String, Field, List
 
 from service import packages_table
 from .types import Package, PackageSummary, PackageInput, PackageFilter, \
-    PackageRecommendation, PackageRecommendationsInput, \
-    UserKanbanPackage, UserKanbanPackageInput, User, CurrentUserInput, UserInput
+    PackageRecommendation, PackageRecommendationsInput, UserKanbanPackage, \
+    UserKanbanPackageInput, User, CurrentUserInput, UserInput, UserConnection, \
+    UserConnectionInput
 from .resolvers import get_package, get_package_summary, get_packages, get_user, \
-    get_package_recommendations, get_user_kanban_packages, create_user, get_current_user
+    get_package_recommendations, get_user_kanban_packages, create_user, get_current_user, \
+    get_user_connections
 from .mutations import CreatePackage, CreatePackageRecommendation, DeletePackageRecommendation, \
     CreateUserKanbanPackage, UpdateUserKanbanPackage, DeleteUserKanbanPackage, \
     CreateUser, LoginUser, UpdateUser
@@ -46,6 +48,12 @@ class RootQuery(ObjectType):
         User,
         payload=CurrentUserInput(),
         resolver=get_current_user
+    )
+
+    user_connections = List(
+        UserConnection,
+        payload=UserConnectionInput(),
+        resolver=get_user_connections
     )
 
     user = Field(

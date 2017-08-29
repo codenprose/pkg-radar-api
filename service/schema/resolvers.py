@@ -5,8 +5,8 @@ from datetime import datetime
 import pprint
 
 from service import packages_table, package_tags_table, package_recommendations_table, \
-    user_kanban_packages_table, users_table
-from .types import Package, PackageRecommendation, UserKanbanPackage, User
+    user_kanban_packages_table, users_table, user_connections_table
+from .types import Package, PackageRecommendation, UserKanbanPackage, User, UserConnection
 
 
 # Queries
@@ -33,11 +33,27 @@ def get_current_user(root, args, context, info):
 
     item = data['Item']
 
+    connections_response = user_connections_table.query(
+        IndexName='user-connections-index',
+        ExpressionAttributeValues={':username': username },
+        KeyConditionExpression='username = :username',
+        ReturnConsumedCapacity='INDEXES'
+    )
+
+    connections_data = connections_response['Items']
+    connections = []
+
+    for connection in connections_data:
+        connections.append(
+            UserConnection(username=connection['connection_username'])
+        )
+
     return User(
         id=item['id'],
         avatar=item['avatar'],
         bio=item['bio'] or '',
         company=item['company'] or '',
+        connections=connections,
         email=item['email'],
         kanban_boards=item['kanban_boards'] or [],
         kanban_card_positions=item['kanban_card_positions'] or [],
@@ -47,6 +63,33 @@ def get_current_user(root, args, context, info):
         username=item['username'],
         website=item['website'] or '',
     )
+
+
+def get_user_connections(root, args, context, info):
+    payload = args.get('payload')
+    username = payload['username']
+
+    connections_response = user_connections_table.query(
+        IndexName='user-connections-index',
+        ExpressionAttributeValues={':username': username },
+        KeyConditionExpression='username = :username',
+        ReturnConsumedCapacity='INDEXES'
+    )
+
+    connections = connections_response['Items']
+
+    response = []
+    for connection in connections:
+        response.append(
+            UserConnection(
+                avatar=connection['connection_avatar'],
+                bio=connection['connection_bio'],
+                name=connection['connection_name'],
+                username=connection['connection_username']
+            )
+        )
+
+    return response
 
 
 def get_user(root, args, context, info):
@@ -61,11 +104,27 @@ def get_user(root, args, context, info):
 
     item = data['Item']
 
+    connections_response = user_connections_table.query(
+        IndexName='user-connections-index',
+        ExpressionAttributeValues={':username': username },
+        KeyConditionExpression='username = :username',
+        ReturnConsumedCapacity='INDEXES'
+    )
+
+    connections_data = connections_response['Items']
+    connections = []
+
+    for connection in connections_data:
+        connections.append(
+            UserConnection(username=connection['connection_username'])
+        )
+
     return User(
         id=item['id'],
         avatar=item['avatar'],
         bio=item['bio'] or '',
         company=item['company'] or '',
+        connections=connections,
         email=item['email'],
         kanban_boards=item['kanban_boards'] or [],
         kanban_card_positions=item['kanban_card_positions'] or [],
