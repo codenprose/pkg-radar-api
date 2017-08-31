@@ -742,9 +742,13 @@ def create_user_connection(**kwargs):
         'connection': kwargs.get('connection')
     }
 
-    print(user_connection)
+    user_connection_second = {
+        'connection': kwargs.get('user'),
+        'username': kwargs.get('connection')
+    }
 
-    item = user_connections_table.put_item(Item=user_connection)
+    user_connections_table.put_item(Item=user_connection)
+    user_connections_table.put_item(Item=user_connection_second)
 
     return UserConnection(username=user_connection['connection'])
 
@@ -755,10 +759,17 @@ def delete_user_connection(**kwargs):
         'connection': kwargs.get('connection')
     }
 
-    item = user_connections_table.delete_item(
+    user_connections_table.delete_item(
         Key={
             'username': user_connection['user'],
             'connection': user_connection['connection']
+        }
+    )
+
+    user_connections_table.delete_item(
+        Key={
+            'connection': user_connection['user'],
+            'username': user_connection['connection']
         }
     )
 
