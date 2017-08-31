@@ -10,7 +10,7 @@ from .resolvers import get_package, get_package_summary, get_packages, get_user,
     get_user_connections
 from .mutations import CreatePackage, CreatePackageRecommendation, DeletePackageRecommendation, \
     CreateUserKanbanPackage, UpdateUserKanbanPackage, DeleteUserKanbanPackage, \
-    CreateUser, LoginUser, UpdateUser
+    CreateUser, LoginUser, UpdateUser, CreateUserConnection, DeleteUserConnection
 
 
 class RootQuery(ObjectType):
@@ -81,6 +81,10 @@ class Mutations(ObjectType):
     login_user = LoginUser.Field()
 
     update_user = UpdateUser.Field()
+
+    create_user_connection = CreateUserConnection.Field()
+
+    delete_user_connection = DeleteUserConnection.Field()
 
 
 schema = Schema(query=RootQuery, mutation=Mutations)

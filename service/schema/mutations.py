@@ -1,10 +1,10 @@
 from graphene import Mutation, String, ID, Field, List
 
 from .types import Package,PackageRecommendation, UserKanbanPackage, User, \
-    KanbanCard, KanbanCardInput
+    KanbanCard, KanbanCardInput, UserConnection
 from .resolvers import create_package, create_package_recommendation, delete_package_recommendation,  \
     create_user_kanban_package, update_user_kanban_package, delete_user_kanban_package, \
-    create_user, login_user, update_user
+    create_user, login_user, update_user, create_user_connection, delete_user_connection
 
 
 class CreateUser(Mutation):
@@ -275,3 +275,44 @@ class UpdateUser(Mutation):
         user = update_user(**data)
 
         return UpdateUser(user=user)
+
+
+class CreateUserConnection(Mutation):
+    class Input:
+        user = String(required=True)
+        connection = String(required=True)
+
+
+    user_connection = Field(lambda: UserConnection)
+
+    @staticmethod
+    def mutate(root, args, context, info):
+        user = args.get('user')
+        connection = args.get('connection')
+
+        user_connection = create_user_connection(
+            user=user,
+            connection=connection
+        )
+
+        return CreateUserConnection(user_connection=user_connection)
+
+
+class DeleteUserConnection(Mutation):
+    class Input:
+        user = String(required=True)
+        connection = String(required=True)
+
+    user_connection = Field(lambda: UserConnection)
+
+    @staticmethod
+    def mutate(root, args, context, info):
+        user = args.get('user')
+        connection = args.get('connection')
+
+        user_connection = delete_user_connection(
+            user=user,
+            connection=connection
+        )
+
+        return DeleteUserConnection(user_connection=user_connection)
