@@ -260,7 +260,7 @@ class UpdateUserKanbanPackage(Mutation):
 class UpdateUser(Mutation):
     class Input:
         username = String(required=True)
-        kanban_card_positions = List(KanbanCardInput)
+        kanban_cards = List(KanbanCardInput)
         kanban_boards = List(String)
 
     user = Field(lambda: User)

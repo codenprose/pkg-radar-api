@@ -182,7 +182,7 @@ class User(ObjectType):
     created_at = String(required=True)
     email = String(required=True)
     kanban_boards = List(String)
-    kanban_card_positions = List(lambda: KanbanCard)
+    kanban_cards = List(lambda: KanbanCard)
     name = String(required=True)
     total_subscriptions = Int(required=True)
     total_packages = Int(required=True)
