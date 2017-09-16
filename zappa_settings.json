@@ -3,6 +3,14 @@
         "app_function": "service.app",
         "profile_name": "default",
         "s3_bucket": "pkg-radar-api-dev",
-        "aws_region": "us-east-1"
+        "aws_region": "us-east-1",
+        "environment_variables": {
+           "packages_table": "pkg_radar_dev_packages",
+           "package_tags_table": "pkg_radar_dev_package_tags",
+           "package_recommendations_table": "pkg_radar_dev_package_recommendations",
+           "user_kanban_packages_table": "pkg_radar_dev_user_kanban_packages",
+           "user_connections_table": "pkg_radar_dev_user_connections",
+           "users_table": "pkg_radar_dev_users"
+       }
     }
 }
