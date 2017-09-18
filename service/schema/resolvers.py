@@ -16,8 +16,8 @@ def get_current_user(root, args, context, info):
     token = payload['token']
 
     # TODO: validate token
-    # client_id = '1050d5bcb642ab0beb2e'
-    # client_secret = 'dacf3ed918494dd629207ff4ebfb05dee261ccc3'
+    # client_id = ''
+    # client_secret = ''
     #
     # endpoint = 'https://api.github.com/applications/' + client_id + '/tokens/' + token
     # user = requests.get(endpoint, auth=(client_id, client_secret))
