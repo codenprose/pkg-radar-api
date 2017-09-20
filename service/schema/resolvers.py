@@ -4,9 +4,9 @@ import uuid
 from datetime import datetime
 import pprint
 
-from service import packages_table, package_tags_table, package_recommendations_table, \
-    user_kanban_packages_table, users_table, user_connections_table
-from .types import Package, PackageRecommendation, UserKanbanPackage, User, UserConnection
+from service import packages_table, user_kanban_packages_table, \
+     users_table, user_connections_table
+from .types import Package, UserKanbanPackage, User, UserConnection
 
 
 # Queries
@@ -48,12 +48,17 @@ def get_current_user(root, args, context, info):
                 UserConnection(username=connection['connection'])
             )
 
+    item['connections'] = connections
+
+    print('Retrieved Current User')
+    print(item)
+
     return User(
         id=item['id'],
         avatar=item['avatar'],
         bio=item['bio'] or '',
         company=item['company'] or '',
-        connections=connections,
+        connections=item['connections'],
         email=item['email'],
         kanban_boards=item['kanban_boards'] or [],
         kanban_cards=item['kanban_cards'] or [],
@@ -124,13 +129,18 @@ def get_user(root, args, context, info):
         connections.append(
             UserConnection(username=connection['connection'])
         )
+    
+    item['connections'] = connections
+
+    print('Retrieved User')
+    print(item['username'])
 
     return User(
         id=item['id'],
         avatar=item['avatar'],
         bio=item['bio'] or '',
         company=item['company'] or '',
-        connections=connections,
+        connections=item['connections'],
         email=item['email'],
         kanban_boards=item['kanban_boards'] or [],
         kanban_cards=item['kanban_cards'] or [],
@@ -157,10 +167,8 @@ def get_package(root, args, context, info):
 
     item = data['Item']
 
-    print('-' * 50)
-    print('Consumed Capacity: Package')
-    print('-' * 50)
-    print(data['ConsumedCapacity'])
+    print('Retrieved Package')
+    print(item['package_name'])
 
     return Package(
         archive=item['archive'],
@@ -208,12 +216,8 @@ def get_package_summary(root, args, context, info):
 
     item = data['Items'][0]
 
-    print('Package Summary')
-    print('-' * 50)
-    print(item)
-    print('Consumed Capacity: Package Summary')
-    print('-' * 50)
-    print(data['ConsumedCapacity'])
+    print('Retrieved Package Summary')
+    print(package_name)
 
     return Package(
         color=item['color'],
@@ -254,57 +258,6 @@ def get_packages(root, args, context, info):
                 owner_name=item['owner_name'],
                 package_name=item['package_name'],
                 stars=item['stars'],
-            )
-        )
-
-    return response
-
-
-def get_package_tags(root, args, context, info):
-    payload = args.get('payload')
-    package_id = payload['package_id']
-
-    data = package_tags_table.query(
-        IndexName='all-tags',
-        ExpressionAttributeValues={':id': package_id},
-        KeyConditionExpression='package_id = :id',
-        ReturnConsumedCapacity='INDEXES'
-    )
-
-    tags = data['Items']
-    response = []
-
-    for item in tags:
-        response.append(
-            PackageTag(
-                package_id=item['package_id'],
-                tag_name=item['tag_name']
-            )
-        )
-    return response
-
-
-def get_package_recommendations(root, args, context, info):
-    payload = args.get('payload')
-    package_id = payload['package_id']
-
-    data = package_recommendations_table.query(
-        IndexName='all-recommendations',
-        ExpressionAttributeValues={':id': package_id},
-        KeyConditionExpression='package_id = :id',
-        ReturnConsumedCapacity='INDEXES'
-    )
-
-    recommendations = data['Items']
-    response = []
-
-    # Add get batch item logic
-    for item in recommendations:
-        response.append(
-            PackageRecommendation(
-                package_id=item['package_id'],
-                recommendation_owner_name=item['recommendation_owner_name'],
-                recommendation_package_name=item['recommendation_package_name']
             )
         )
 
@@ -405,7 +358,8 @@ def create_user(**kwargs):
 
     item = users_table.put_item(Item=user)
 
-    print('Successfully wrote user to DynamoDB')
+    print('Created user')
+    print(item)
 
     return User(
         avatar=user['avatar'],
@@ -472,8 +426,8 @@ def update_user(**kwargs):
 
     data = item['Attributes']
 
-    print('Successfully wrote to DynamoDB')
-    print(item)
+    print('Updated User')
+    print(data)
 
     for key in user:
         if key != 'username':
@@ -519,7 +473,8 @@ def create_package(owner, name, created_by):
 
     item = packages_table.put_item(Item=package)
 
-    print('Successfully wrote to DynamoDB')
+    print('Created Package')
+    print(item)
 
     return Package(
         archive=package['archive'],
@@ -553,100 +508,6 @@ def create_package(owner, name, created_by):
     )
 
 
-def create_package_tag(tag_name, package_id, owner_name, package_name):
-    tag = {
-        'tag_name': tag_name,
-        'package_id': package_id,
-        'owner_name': owner_name,
-        'package_name': package_name
-    }
-
-    item = package_tags_table.put_item(Item=tag)
-
-    print('Successfully wrote to DynamoDB')
-    print(item)
-
-    return PackageTag(
-        tag_name=tag['tag_name'],
-        package_id=tag['package_id'],
-        owner_name=tag['owner_name'],
-        package_name=tag['package_name']
-    )
-
-
-def delete_package_tag(package_id, tag_name):
-    tag = {
-        'package_id': package_id,
-        'tag_name': tag_name
-    }
-
-    item = package_tags_table.delete_item(
-        Key={
-            'package_id': package_id,
-            'tag_name': tag_name
-        }
-    )
-
-    print('Successfully wrote to DynamoDB')
-    print(item)
-
-    return PackageTag(
-        package_id=tag['package_id'],
-        tag_name=tag['tag_name']
-    )
-
-
-def create_package_recommendation(**kwargs):
-    recommendation = {
-        'package_id': kwargs['package_id'],
-        'owner_name': kwargs['owner_name'],
-        'package_name': kwargs['package_name'],
-        'recommendation_package_id': kwargs['recommendation_package_id'],
-        'recommendation_owner_name': kwargs['recommendation_owner_name'],
-        'recommendation_package_name': kwargs['recommendation_package_name']
-    }
-
-    item = package_recommendations_table.put_item(Item=recommendation)
-
-    print('Successfully wrote to DynamoDB')
-    print(item)
-
-    return PackageRecommendation(
-        package_id=recommendation['package_id'],
-        owner_name=recommendation['owner_name'],
-        package_name=recommendation['package_name'],
-        recommendation_package_id=recommendation['recommendation_package_id'],
-        recommendation_owner_name=recommendation['recommendation_owner_name'],
-        recommendation_package_name=recommendation['recommendation_package_name']
-    )
-
-
-def delete_package_recommendation(**kwargs):
-    recommendation = {
-        'package_id': kwargs['package_id'],
-        'recommendation_package_id': kwargs['recommendation_package_id'],
-        'recommendation_owner_name': kwargs['recommendation_owner_name'],
-        'recommendation_package_name': kwargs['recommendation_package_name']
-    }
-
-    item = package_recommendations_table.delete_item(
-        Key={
-            'package_id': recommendation['package_id'],
-            'recommendation_package_id': recommendation['recommendation_package_id']
-        }
-    )
-
-    print('Successfully wrote to DynamoDB')
-    print(item)
-
-    return PackageRecommendation(
-        package_id=recommendation['package_id'],
-        recommendation_package_id=recommendation['recommendation_package_id'],
-        recommendation_owner_name=recommendation['recommendation_owner_name'],
-        recommendation_package_name=recommendation['recommendation_package_name']
-    )
-
-
 def create_user_kanban_package(**kwargs):
     user_kanban_package = {
         'owner_name': kwargs.get('owner_name'),
@@ -677,9 +538,6 @@ def update_user_kanban_package(**kwargs):
         'username': kwargs.get('username')
     }
 
-    print('-' * 30)
-    print(user_kanban_package['status'])
-
     item = user_kanban_packages_table.update_item(
         Key={
             'package_id': user_kanban_package['package_id'],
@@ -694,10 +552,10 @@ def update_user_kanban_package(**kwargs):
         ReturnValues='ALL_OLD'
     )
 
-    print('Successfully wrote to DynamoDB')
-    print(item)
-
     data = item['Attributes']
+
+    print('Updated Kanban Package Status')
+    print(user_kanban_package['status'])
 
     return UserKanbanPackage(
         owner_name=data['owner_name'],
@@ -722,10 +580,10 @@ def delete_user_kanban_package(**kwargs):
         ReturnValues='ALL_OLD'
     )
 
-    print('Successfully wrote to DynamoDB')
-    print(item)
-
     data = item['Attributes']
+
+    print('Deleted User Kanban Package')
+    print(data)
 
     return UserKanbanPackage(
         owner_name=data['owner_name'],
@@ -750,6 +608,9 @@ def create_user_connection(**kwargs):
     user_connections_table.put_item(Item=user_connection)
     user_connections_table.put_item(Item=user_connection_second)
 
+    print('Created User Connection')
+    print(user_connection)
+
     return UserConnection(username=user_connection['connection'])
 
 
@@ -772,5 +633,8 @@ def delete_user_connection(**kwargs):
             'username': user_connection['connection']
         }
     )
+
+    print('Deleted User Connection')
+    print(user_connection)
 
     return UserConnection(username=user_connection['connection'])

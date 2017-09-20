@@ -2,15 +2,12 @@ from graphene import Schema, ObjectType, String, Field, List
 
 from service import packages_table
 from .types import Package, PackageSummary, PackageInput, PackageFilter, \
-    PackageRecommendation, PackageRecommendationsInput, UserKanbanPackage, \
-    UserKanbanPackageInput, User, CurrentUserInput, UserInput, UserConnection, \
-    UserConnectionInput
+     UserKanbanPackage, UserKanbanPackageInput, User, CurrentUserInput, \
+     UserInput, UserConnection, UserConnectionInput
 from .resolvers import get_package, get_package_summary, get_packages, get_user, \
-    get_package_recommendations, get_user_kanban_packages, create_user, get_current_user, \
-    get_user_connections
-from .mutations import CreatePackage, CreatePackageRecommendation, DeletePackageRecommendation, \
-    CreateUserKanbanPackage, UpdateUserKanbanPackage, DeleteUserKanbanPackage, \
-    CreateUser, LoginUser, UpdateUser, CreateUserConnection, DeleteUserConnection
+     get_user_kanban_packages, create_user, get_current_user, get_user_connections
+from .mutations import CreatePackage, CreateUserKanbanPackage, UpdateUserKanbanPackage, \
+     DeleteUserKanbanPackage, CreateUser, LoginUser, UpdateUser, CreateUserConnection, DeleteUserConnection
 
 
 class RootQuery(ObjectType):
@@ -30,12 +27,6 @@ class RootQuery(ObjectType):
         PackageSummary,
         filter=PackageFilter(),
         resolver=get_packages
-    )
-
-    package_recommendations = List(
-        PackageRecommendation,
-        payload=PackageRecommendationsInput(),
-        resolver=get_package_recommendations
     )
 
     user_kanban_packages = List(
@@ -65,10 +56,6 @@ class RootQuery(ObjectType):
 
 class Mutations(ObjectType):
     create_package = CreatePackage.Field()
-
-    create_package_recommendation = CreatePackageRecommendation.Field()
-
-    delete_package_recommendation = DeletePackageRecommendation.Field()
 
     create_user_kanban_package = CreateUserKanbanPackage.Field()
 

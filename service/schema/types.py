@@ -158,20 +158,6 @@ class Author(ObjectType):
         return root['email']
 
 
-# Package Recommendations
-class PackageRecommendation(ObjectType):
-    package_id = ID(required=True)
-    owner_name = String()
-    package_name = String()
-    recommendation_package_id = ID(required=True)
-    recommendation_owner_name = String(required=True)
-    recommendation_package_name = String(required=True)
-
-
-class PackageRecommendationsInput(InputObjectType):
-    package_id = ID(required=True)
-
-
 # Users
 class User(ObjectType):
     id = ID(required=True)
