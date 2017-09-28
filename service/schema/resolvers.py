@@ -129,7 +129,7 @@ def get_user(root, args, context, info):
         connections.append(
             UserConnection(username=connection['connection'])
         )
-    
+
     item['connections'] = connections
 
     print('Retrieved User')
@@ -471,7 +471,10 @@ def create_package(owner, name, created_by):
     package['production'] = 0
     package['trial'] = 0
 
-    item = packages_table.put_item(Item=package)
+    item = packages_table.put_item(
+        Item=package,
+        ConditionExpression='attribute_not_exists(id)'
+    )
 
     print('Created Package')
     print(item)
