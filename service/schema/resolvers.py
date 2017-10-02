@@ -362,6 +362,9 @@ def create_user(**kwargs):
     if kwargs['company']:
         user['company'] = kwargs['company']
 
+    print('create user')
+    print(user)
+    
     item = users_table.put_item(Item=user)
 
     print('Created user')
