@@ -362,7 +362,7 @@ def create_user(**kwargs):
         user['company'] = kwargs['company']
 
     if kwargs['location']:
-        user['location']: kwargs['location'],
+        user['location']: kwargs['location']
 
     print('create user')
     print(user)
