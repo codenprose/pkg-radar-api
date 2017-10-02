@@ -321,8 +321,8 @@ def create_user(**kwargs):
 
         return User(
             avatar=user_exists_item['avatar'],
-            bio=user_exists_item['bio'],
-            company=user_exists_item['company'],
+            bio=user_exists_item['bio'] or ',
+            company=user_exists_item['company'] or '',
             created_at=user_exists_item['created_at'],
             email=user_exists_item['email'],
             id=user_exists_item['id'],
@@ -332,7 +332,7 @@ def create_user(**kwargs):
             total_packages=user_exists_item['total_packages'],
             total_subscriptions=user_exists_item['total_subscriptions'],
             username=user_exists_item['username'],
-            website=user_exists_item['website']
+            website=user_exists_item['website'] or ''
         )
 
     id = uuid.uuid4()
@@ -340,8 +340,6 @@ def create_user(**kwargs):
 
     user = {
         'avatar': kwargs['avatar'],
-        'bio': kwargs['bio'],
-        'company': kwargs['company'],
         'created_at': date,
         'email': kwargs['email'],
         'github_id': kwargs['github_id'],
@@ -352,9 +350,17 @@ def create_user(**kwargs):
         'name': kwargs['name'],
         'total_packages': 0,
         'total_subscriptions': 0,
-        'username': kwargs['username'],
-        'website': kwargs['website']
+        'username': kwargs['username']
     }
+
+    if kwargs['bio']:
+        user['bio'] = kwargs['bio']
+
+    if kwargs['website']:
+        user['website'] = kwargs['website']
+    
+    if kwargs['company']:
+        user['company'] = kwargs['company']
 
     item = users_table.put_item(Item=user)
 
@@ -363,8 +369,8 @@ def create_user(**kwargs):
 
     return User(
         avatar=user['avatar'],
-        bio=user['bio'],
-        company=user['company'],
+        bio=user['bio'] or '',
+        company=user['company'] or '',
         created_at=user['created_at'],
         email=user['email'],
         id=user['id'],
@@ -374,7 +380,7 @@ def create_user(**kwargs):
         total_packages=user['total_packages'],
         total_subscriptions=user['total_subscriptions'],
         username=user['username'],
-        website=user['website']
+        website=user['website'] or ''
     )
 
 
