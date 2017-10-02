@@ -374,8 +374,8 @@ def create_user(**kwargs):
 
     return User(
         avatar=user['avatar'],
-        bio=user['bio'] or '',
-        company=user['company'] or '',
+        bio=user['bio'] if 'bio' in user else '',
+        company=user['company'] if 'company' in user else '',
         created_at=user['created_at'],
         email=user['email'],
         id=user['id'],
@@ -385,7 +385,7 @@ def create_user(**kwargs):
         total_packages=user['total_packages'],
         total_subscriptions=user['total_subscriptions'],
         username=user['username'],
-        website=user['website'] or ''
+        website=user['website'] if 'website' in user else ''
     )
 
 
