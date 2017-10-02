@@ -95,7 +95,7 @@ def get_user_connections(root, args, context, info):
         response.append(
             UserConnection(
                 avatar=item['avatar'],
-                bio=item['bio'],
+                bio=item['bio'] if 'bio' in item else '',
                 name=item['name'],
                 username=item['username']
             )
