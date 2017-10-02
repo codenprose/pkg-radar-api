@@ -138,17 +138,17 @@ def get_user(root, args, context, info):
     return User(
         id=item['id'],
         avatar=item['avatar'],
-        bio=item['bio'] or '',
-        company=item['company'] or '',
+        bio=item['bio'] if 'bio' in item else '',
+        company=item['company'] if 'company' in item else '',
         connections=item['connections'],
         email=item['email'],
-        kanban_boards=item['kanban_boards'] or [],
-        kanban_cards=item['kanban_cards'] or [],
+        kanban_boards=item['kanban_boards'],
+        kanban_cards=item['kanban_cards'],
         name=item['name'],
         total_subscriptions=item['total_subscriptions'],
         total_packages=item['total_packages'],
         username=item['username'],
-        website=item['website'] or '',
+        website=item['website'] if 'website' in item else '',
     )
 
 
