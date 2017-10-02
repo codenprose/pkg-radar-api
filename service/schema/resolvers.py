@@ -321,7 +321,7 @@ def create_user(**kwargs):
 
         return User(
             avatar=user_exists_item['avatar'],
-            bio=user_exists_item['bio'] or ',
+            bio=user_exists_item['bio'] or '',
             company=user_exists_item['company'] or '',
             created_at=user_exists_item['created_at'],
             email=user_exists_item['email'],
