@@ -346,7 +346,6 @@ def create_user(**kwargs):
         'id': str(id),
         'kanban_boards': ['All'],
         'kanban_cards': [],
-        'location': kwargs['location'],
         'name': kwargs['name'],
         'total_packages': 0,
         'total_subscriptions': 0,
@@ -362,9 +361,12 @@ def create_user(**kwargs):
     if kwargs['company']:
         user['company'] = kwargs['company']
 
+    if kwargs['location']:
+        user['location']: kwargs['location'],
+
     print('create user')
     print(user)
-    
+
     item = users_table.put_item(Item=user)
 
     print('Created user')
