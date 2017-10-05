@@ -482,7 +482,7 @@ def create_package(owner, name, created_by):
     package['production'] = 0
     package['trial'] = 0
 
-    if len(package['tags'] == 0):
+    if len(package['tags']) == 0:
         package.tags.append(package['language'])
 
     item = packages_table.put_item(
