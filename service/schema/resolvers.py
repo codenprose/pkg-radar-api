@@ -357,7 +357,7 @@ def create_user(**kwargs):
 
     if kwargs['website']:
         user['website'] = kwargs['website']
-    
+
     if kwargs['company']:
         user['company'] = kwargs['company']
 
@@ -481,6 +481,9 @@ def create_package(owner, name, created_by):
     package['id'] = str(id)
     package['production'] = 0
     package['trial'] = 0
+
+    if len(package['tags'] == 0):
+        package.tags.append(package['language'])
 
     item = packages_table.put_item(
         Item=package,
