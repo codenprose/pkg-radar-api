@@ -528,7 +528,7 @@ def create_package(owner, name, created_by):
 def update_package(owner, name, data):
     data = json.loads(data)
 
-    print('Update Package', data['package_name'])
+    print('Update Package', name)
     print('tags', data['tags'])
 
     response = packages_table.update_item(
