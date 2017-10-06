@@ -4,7 +4,7 @@ from .types import Package, UserKanbanPackage, User, KanbanCard, \
      KanbanCardInput, UserConnection
 from .resolvers import create_package, create_user_kanban_package, update_user_kanban_package, \
      delete_user_kanban_package, create_user, login_user, update_user, create_user_connection,  \
-     delete_user_connection
+     delete_user_connection, update_package
 
 
 class CreateUser(Mutation):
@@ -79,6 +79,24 @@ class CreatePackage(Mutation):
 
         package = create_package(owner, name, created_by)
         return CreatePackage(package=package)
+
+
+class UpdatePackage(Mutation):
+    class Input:
+        owner = String(required=True)
+        name = String(required=True)
+        data = String(required=True)
+
+    package = Field(lambda: Package)
+
+    @staticmethod
+    def mutate(root, args, context, info):
+        owner = args.get('owner')
+        name = args.get('name')
+        data = args.get('data')
+
+        package = update_package(owner, name, data)
+        return UpdatePackage(package=package)
 
 
 class CreateUserKanbanPackage(Mutation):

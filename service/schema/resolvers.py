@@ -519,9 +519,63 @@ def create_package(owner, name, created_by):
         releases=package['releases'],
         repo_url=package['repo_url'],
         stars=package['stars'],
+        tags=package['tags'],
         trial=package['trial'],
         watchers=package['watchers'],
         website_url=package['website_url']
+    )
+
+def update_package(owner, name, data):
+    data = json.loads(data)
+
+    print('Update Package', data['package_name'])
+    print('tags', data['tags'])
+
+    response = packages_table.update_item(
+        Key={
+            'owner_name': owner,
+            'package_name': name
+        },
+        UpdateExpression="set tags = :t",
+        ExpressionAttributeValues={
+            ':t': data['tags'],
+        },
+        ReturnValues="ALL_NEW"
+    )
+
+    data = response['Attributes']
+
+    print('Update Package Success', data['package_name'])
+    print('tags', data['tags'])
+
+    return Package(
+        archive=data['archive'],
+        backlog=data['backlog'],
+        color=data['color'],
+        commits=data['commits'],
+        contributors=data['contributors'],
+        description=data['description'],
+        forks=data['forks'],
+        id=data['id'],
+        issues=data['issues'],
+        language=data['language'],
+        last_commit=data['last_commit'],
+        last_release=data['last_release'],
+        license=data['license'],
+        mentionable_users=data['mentionable_users'],
+        owner_avatar=data['owner_avatar'],
+        owner_name=data['owner_name'],
+        package_name=data['package_name'],
+        production=data['production'],
+        pull_requests=data['pull_requests'],
+        readme=data['readme'],
+        releases=data['releases'],
+        repo_url=data['repo_url'],
+        stars=data['stars'],
+        tags=data['tags'],
+        trial=data['trial'],
+        watchers=data['watchers'],
+        website_url=data['website_url']
     )
 
 
@@ -534,7 +588,7 @@ def create_user_kanban_package(**kwargs):
         'username': kwargs.get('username')
     }
 
-    item = user_kanban_packages_table.put_item(Item=user_kanban_package)
+    data = user_kanban_packages_table.put_item(Item=user_kanban_package)
 
     print('Successfully wrote to DynamoDB')
     print(item)

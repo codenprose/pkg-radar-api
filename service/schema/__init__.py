@@ -7,7 +7,8 @@ from .types import Package, PackageSummary, PackageInput, PackageFilter, \
 from .resolvers import get_package, get_package_summary, get_packages, get_user, \
      get_user_kanban_packages, create_user, get_current_user, get_user_connections
 from .mutations import CreatePackage, CreateUserKanbanPackage, UpdateUserKanbanPackage, \
-     DeleteUserKanbanPackage, CreateUser, LoginUser, UpdateUser, CreateUserConnection, DeleteUserConnection
+     DeleteUserKanbanPackage, CreateUser, LoginUser, UpdateUser, CreateUserConnection, DeleteUserConnection, \
+     UpdatePackage
 
 
 class RootQuery(ObjectType):
@@ -56,6 +57,8 @@ class RootQuery(ObjectType):
 
 class Mutations(ObjectType):
     create_package = CreatePackage.Field()
+
+    update_package = UpdatePackage.Field()
 
     create_user_kanban_package = CreateUserKanbanPackage.Field()
 
