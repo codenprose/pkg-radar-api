@@ -94,16 +94,16 @@ class LastCommit(ObjectType):
     oid = ID(required=True)
 
     def resolve_author(root, args, context, info):
-        return root['author']
+        return root['author'] if 'author' in root else {}
 
     def resolve_commit_url(root, args, context, info):
-        return root['commit_url']
+        return root['commit_url'] if 'commit_url' in root else ''
 
     def resolve_message(root, args, context, info):
-        return root['message']
+        return root['message'] if 'message' in root else ''
 
     def resolve_oid(root, args, context, info):
-        return root['oid']
+        return root['oid'] if 'oid' in root else ''
 
 
 class Commit(ObjectType):
@@ -149,13 +149,13 @@ class Author(ObjectType):
     email = String()
 
     def resolve_date(root, args, context, info):
-        return root['date']
+        return root['date'] if 'date' in root else ''
 
     def resolve_name(root, args, context, info):
-        return root['name']
+        return root['name'] if 'name' in root else ''
 
     def resolve_email(root, args, context, info):
-        return root['email']
+        return root['email'] if 'email' in root else ''
 
 
 # Users
