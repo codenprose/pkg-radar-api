@@ -583,8 +583,9 @@ def create_user_kanban_package(**kwargs):
 
     data = user_kanban_packages_table.put_item(Item=user_kanban_package)
 
-    print('Successfully wrote to DynamoDB')
-    print(item)
+    print('Added package to User kanban')
+    print(user_kanban_package['username'])
+    print(user_kanban_package['package_name'])
 
     return UserKanbanPackage(
         owner_name=user_kanban_package['owner_name'],
