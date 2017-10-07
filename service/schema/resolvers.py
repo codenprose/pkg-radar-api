@@ -482,6 +482,9 @@ def create_package(owner, name, created_by):
     package['production'] = 0
     package['trial'] = 0
 
+    if 'tags' not in package:
+        package['tags'] = []
+
     if len(package['tags']) == 0:
         package.tags.append(package['language'])
 
@@ -491,7 +494,7 @@ def create_package(owner, name, created_by):
     )
 
     print('Created Package')
-    print(item)
+    print(package['package_name'])
 
     return Package(
         archive=package['archive'],
