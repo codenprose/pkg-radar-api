@@ -19,7 +19,7 @@
         "aws_region": "us-east-1",
         "events": [
           {
-            "function": "service.fetch_packages",
+            "function": "service.update_packages",
             "expression": "cron(0 1 * * ? *)"
           }
         ],

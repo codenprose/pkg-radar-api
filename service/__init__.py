@@ -121,7 +121,7 @@ def update_package(owner_name, package_name):
     except Exception:
         clientSentry.captureException()
 
-def fetch_packages():
+def update_packages():
     response = packages_table.scan(
         IndexName='summary-index',
         Select='ALL_PROJECTED_ATTRIBUTES',
