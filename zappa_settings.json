@@ -17,6 +17,12 @@
         "profile_name": "default",
         "s3_bucket": "pkg-radar-api-prod",
         "aws_region": "us-east-1",
+        "events": [
+          {
+            "function": "service.fetch_packages",
+            "expression": "cron(0 1 * * ? *)"
+          }
+        ],
         "environment_variables": {
            "pkg_radar_sentry_dsn": "https://d75f6551f76d4d418774aff4799f19ad:a807d9c2ba324cb591bed1efe0c79ad8@sentry.io/230459",
            "packages_table": "pkg_radar_packages_prod",

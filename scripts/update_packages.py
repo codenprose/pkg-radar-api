@@ -113,7 +113,7 @@ def fetch_packages():
         ConsistentRead=True
     )
 
-    packages = tqdm(response['Items'][:60])
+    packages = tqdm(response['Items'])
 
     # print('Updating Packages...', len(packages))
     # print('Consumed Capacity', response['ConsumedCapacity']['CapacityUnits'])
