@@ -31,7 +31,7 @@ user_kanban_packages_table = db_r.Table(os.environ.get('user_kanban_packages_tab
 
 from service import views
 
-@task
+@task()
 def update_package(owner_name, package_name):
     try:
         endpoint = 'https://rc5s84uwm4.execute-api.us-east-1.amazonaws.com/dev/service'
@@ -136,3 +136,4 @@ def update_packages():
         package_name = pkg['package_name']
 
         update_package(owner_name, package_name)
+    return 'Updated ' + len(packages) + ' Packages'
