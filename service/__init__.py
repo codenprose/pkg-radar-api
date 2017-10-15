@@ -33,90 +33,93 @@ from service import views
 
 @task
 def update_package(owner_name, package_name):
-    endpoint = 'https://rc5s84uwm4.execute-api.us-east-1.amazonaws.com/dev/service'
-    payload = {'owner': owner, 'name': name}
+    try:
+        endpoint = 'https://rc5s84uwm4.execute-api.us-east-1.amazonaws.com/dev/service'
+        payload = {'owner': owner_name, 'name': package_name}
 
-    # fetch github data
-    r = requests.post(endpoint, json=payload)
-    if r.status_code != requests.codes.ok:
-        return r.raise_for_status()
+        # fetch github data
+        r = requests.post(endpoint, json=payload)
+        if r.status_code != requests.codes.ok:
+            return r.raise_for_status()
 
-    pkg = r.json()
+        pkg = r.json()
 
-    # update item in dynamodb
-    response = packages_table.update_item(
-        Key={
-            'owner_name': pkg['owner_name'],
-            'package_name': pkg['package_name']
-        },
-        AttributeUpdates={
-            'commits': {
-                'Value': pkg['commits'],
-                'Action': 'PUT'
+        # update item in dynamodb
+        response = packages_table.update_item(
+            Key={
+                'owner_name': pkg['owner_name'],
+                'package_name': pkg['package_name']
             },
-            'contributors': {
-                'Value': pkg['contributors'],
-                'Action': 'PUT'
+            AttributeUpdates={
+                'commits': {
+                    'Value': pkg['commits'],
+                    'Action': 'PUT'
+                },
+                'contributors': {
+                    'Value': pkg['contributors'],
+                    'Action': 'PUT'
+                },
+                'description': {
+                    'Value': pkg['description'],
+                    'Action': 'PUT'
+                },
+                'forks': {
+                    'Value': pkg['forks'],
+                    'Action': 'PUT'
+                },
+                'issues': {
+                    'Value': pkg['issues'],
+                    'Action': 'PUT'
+                },
+                'language': {
+                    'Value': pkg['language'],
+                    'Action': 'PUT'
+                },
+                'last_commit': {
+                    'Value': pkg['last_commit'],
+                    'Action': 'PUT'
+                },
+                # 'last_release': {
+                #     'Value': pkg['last_release'],
+                #     'Action': 'PUT'
+                # },
+                'license': {
+                    'Value': pkg['license'],
+                    'Action': 'PUT'
+                },
+                'mentionable_users': {
+                    'Value': pkg['mentionable_users'],
+                    'Action': 'PUT'
+                },
+                'owner_avatar': {
+                    'Value': pkg['owner_avatar'],
+                    'Action': 'PUT'
+                },
+                'readme': {
+                    'Value': pkg['readme'],
+                    'Action': 'PUT'
+                },
+                'releases': {
+                    'Value': pkg['releases'],
+                    'Action': 'PUT'
+                },
+                'stars': {
+                    'Value': pkg['stars'],
+                    'Action': 'PUT'
+                },
+                'watchers': {
+                    'Value': pkg['watchers'],
+                    'Action': 'PUT'
+                },
+                'website_url': {
+                    'Value': pkg['website_url'],
+                    'Action': 'PUT'
+                }
             },
-            'description': {
-                'Value': pkg['description'],
-                'Action': 'PUT'
-            },
-            'forks': {
-                'Value': pkg['forks'],
-                'Action': 'PUT'
-            },
-            'issues': {
-                'Value': pkg['issues'],
-                'Action': 'PUT'
-            },
-            'language': {
-                'Value': pkg['language'],
-                'Action': 'PUT'
-            },
-            'last_commit': {
-                'Value': pkg['last_commit'],
-                'Action': 'PUT'
-            },
-            # 'last_release': {
-            #     'Value': pkg['last_release'],
-            #     'Action': 'PUT'
-            # },
-            'license': {
-                'Value': pkg['license'],
-                'Action': 'PUT'
-            },
-            'mentionable_users': {
-                'Value': pkg['mentionable_users'],
-                'Action': 'PUT'
-            },
-            'owner_avatar': {
-                'Value': pkg['owner_avatar'],
-                'Action': 'PUT'
-            },
-            'readme': {
-                'Value': pkg['readme'],
-                'Action': 'PUT'
-            },
-            'releases': {
-                'Value': pkg['releases'],
-                'Action': 'PUT'
-            },
-            'stars': {
-                'Value': pkg['stars'],
-                'Action': 'PUT'
-            },
-            'watchers': {
-                'Value': pkg['watchers'],
-                'Action': 'PUT'
-            },
-            'website_url': {
-                'Value': pkg['website_url'],
-                'Action': 'PUT'
-            }
-        },
-        ReturnValues="ALL_NEW"
-    )
+            ReturnValues="ALL_NEW"
+        )
+    except Exception:
+        clientSentry.captureException()
 
 def fetch_packages():
     response = packages_table.scan(
@@ -132,7 +135,4 @@ def fetch_packages():
         owner_name = pkg['owner_name']
         package_name = pkg['package_name']
 
-        try:
-            update_package(owner_name, package_name)
-        except Exception:
-            clientSentry.captureException()
+        update_package(owner_name, package_name)
