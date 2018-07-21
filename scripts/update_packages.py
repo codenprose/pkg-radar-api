@@ -10,8 +10,7 @@ db_c = session.client('dynamodb')
 packages_table = db_r.Table('pkg_radar_packages_prod')
 
 def fetch_pkg(owner, name):
-    # print('Fetching {0} / {1}...'.format(owner, name))
-    endpoint = 'https://rc5s84uwm4.execute-api.us-east-1.amazonaws.com/dev/service'
+    endpoint = ''
     payload = {'owner': owner, 'name': name}
 
     # fetch github data
@@ -20,13 +19,11 @@ def fetch_pkg(owner, name):
         return r.raise_for_status()
 
     package = r.json()
-    # print('Fetched {0} / {1}'.format(package['owner_name'], package['package_name']))
 
     return package
 
 def update_package(owner_name, package_name):
     pkg = fetch_pkg(owner_name, package_name)
-    # print('Updating {0} / {1}...'.format(pkg['owner_name'], pkg['package_name']))
 
     response = packages_table.update_item(
         Key={
@@ -62,10 +59,6 @@ def update_package(owner_name, package_name):
                 'Value': pkg['last_commit'],
                 'Action': 'PUT'
             },
-            # 'last_release': {
-            #     'Value': pkg['last_release'],
-            #     'Action': 'PUT'
-            # },
             'license': {
                 'Value': pkg['license'],
                 'Action': 'PUT'
@@ -103,7 +96,6 @@ def update_package(owner_name, package_name):
     )
 
     data = response['Attributes']
-    # print('Updated {0} / {1}'.format(data['owner_name'], data['package_name']))
 
 def fetch_packages():
     response = packages_table.scan(
@@ -115,8 +107,6 @@ def fetch_packages():
 
     packages = tqdm(response['Items'])
 
-    # print('Updating Packages...', len(packages))
-    # print('Consumed Capacity', response['ConsumedCapacity']['CapacityUnits'])
 
     for pkg in packages:
         owner_name = pkg['owner_name']

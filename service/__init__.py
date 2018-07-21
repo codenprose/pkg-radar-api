@@ -34,7 +34,7 @@ from service import views
 @task()
 def update_package(owner_name, package_name):
     try:
-        endpoint = 'https://rc5s84uwm4.execute-api.us-east-1.amazonaws.com/dev/service'
+        endpoint = ''
         payload = {'owner': owner_name, 'name': package_name}
 
         # fetch github data

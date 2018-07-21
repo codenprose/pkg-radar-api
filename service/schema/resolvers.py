@@ -15,16 +15,6 @@ def get_current_user(root, args, context, info):
     username = payload['username']
     token = payload['token']
 
-    # TODO: validate token
-    # client_id = ''
-    # client_secret = ''
-    #
-    # endpoint = 'https://api.github.com/applications/' + client_id + '/tokens/' + token
-    # user = requests.get(endpoint, auth=(client_id, client_secret))
-    #
-    # if user.status_code == 404:
-    #     return 'Token not valid'
-
     data = users_table.get_item(
         Key={
             'username': username
@@ -49,9 +39,6 @@ def get_current_user(root, args, context, info):
             )
 
     item['connections'] = connections
-
-    print('Retrieved Current User')
-    print(item)
 
     return User(
         id=item['id'],
@@ -131,9 +118,6 @@ def get_user(root, args, context, info):
         )
 
     item['connections'] = connections
-
-    print('Retrieved User')
-    print(item['username'])
 
     return User(
         id=item['id'],
@@ -242,7 +226,6 @@ def get_packages(root, args, context, info):
             KeyConditionExpression='#L = :l',
             ReturnConsumedCapacity='INDEXES'
         )
-    # Add more filter cases here
 
     packages = data['Items']
     response = []
@@ -364,13 +347,7 @@ def create_user(**kwargs):
     if kwargs['location']:
         user['location']: kwargs['location']
 
-    print('create user')
-    print(user)
-
     item = users_table.put_item(Item=user)
-
-    print('Created user')
-    print(item)
 
     return User(
         avatar=user['avatar'],
@@ -390,8 +367,6 @@ def create_user(**kwargs):
 
 
 def login_user(username, token):
-    # validate token
-
     item = users_table.get_item(
         Key={
             'username': username
@@ -437,9 +412,6 @@ def update_user(**kwargs):
 
     data = item['Attributes']
 
-    print('Updated User')
-    print(data)
-
     for key in user:
         if key != 'username':
             data[key] = user[key]
@@ -461,7 +433,7 @@ def update_user(**kwargs):
 
 
 def create_package(owner, name, created_by):
-    endpoint = 'https://rc5s84uwm4.execute-api.us-east-1.amazonaws.com/dev/service'
+    endpoint = ''
     payload = {'owner': owner, 'name': name}
 
     # fetch github data
@@ -489,9 +461,6 @@ def create_package(owner, name, created_by):
         Item=package,
         ConditionExpression='attribute_not_exists(id)'
     )
-
-    print('Created Package')
-    print(package['package_name'])
 
     return Package(
         archive=package['archive'],
@@ -528,9 +497,6 @@ def create_package(owner, name, created_by):
 def update_package(owner, name, data):
     data = json.loads(data)
 
-    print('Update Package', name)
-    print('tags', data['tags'])
-
     response = packages_table.update_item(
         Key={
             'owner_name': owner,
@@ -544,9 +510,6 @@ def update_package(owner, name, data):
     )
 
     data = response['Attributes']
-
-    print('Update Package Success', data['package_name'])
-    print('tags', data['tags'])
 
     return Package(
         archive=data['archive'],
@@ -583,10 +546,6 @@ def create_user_kanban_package(**kwargs):
 
     data = user_kanban_packages_table.put_item(Item=user_kanban_package)
 
-    print('Added package to User kanban')
-    print(user_kanban_package['username'])
-    print(user_kanban_package['package_name'])
-
     return UserKanbanPackage(
         owner_name=user_kanban_package['owner_name'],
         package_id=user_kanban_package['package_id'],
@@ -619,9 +578,6 @@ def update_user_kanban_package(**kwargs):
 
     data = item['Attributes']
 
-    print('Updated Kanban Package Status')
-    print(user_kanban_package['status'])
-
     return UserKanbanPackage(
         owner_name=data['owner_name'],
         package_id=data['package_id'],
@@ -647,9 +603,6 @@ def delete_user_kanban_package(**kwargs):
 
     data = item['Attributes']
 
-    print('Deleted User Kanban Package')
-    print(data)
-
     return UserKanbanPackage(
         owner_name=data['owner_name'],
         package_id=data['package_id'],
@@ -673,9 +626,6 @@ def create_user_connection(**kwargs):
     user_connections_table.put_item(Item=user_connection)
     user_connections_table.put_item(Item=user_connection_second)
 
-    print('Created User Connection')
-    print(user_connection)
-
     return UserConnection(username=user_connection['connection'])
 
 
@@ -698,8 +648,5 @@ def delete_user_connection(**kwargs):
             'username': user_connection['connection']
         }
     )
-
-    print('Deleted User Connection')
-    print(user_connection)
 
     return UserConnection(username=user_connection['connection'])
